@@ -17,7 +17,9 @@ export default function App() {
 
   const handleSubmit = e => {
     e.preventDefault();
-    axios.post('http://127.0.0.1:8081/todos', { title: newTodo.title, completed: newTodo.completed })
+    axios.post('http://127.0.0.1:8081/addTodo', 
+    { title: newTodo.title, completed: newTodo.completed },
+    { headers: { "Content-type": "text/plain" } })
     .then(response => {
       //setTodos([...todos, response.data]);
       setNewTodo({

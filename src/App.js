@@ -21,7 +21,6 @@ export default function App() {
     { title: newTodo.title, completed: newTodo.completed },
     { headers: { "Content-type": "text/plain" } })
     .then(response => {
-      //setTodos([...todos, response.data]);
       setNewTodo({
         title: "",
         completed: false
@@ -33,13 +32,26 @@ export default function App() {
     });;
   };
 
+  function handleDelete(todoId) {
+    axios.delete(`http://127.0.0.1:8081/todos/delete?id=${todoId}`,
+    { headers: { "Content-type": "text/plain" } }) // delete/1とかもあるがどっちがいいか
+    .then(response => {
+      // リクエストが成功した場合の処理をここに追加
+      console.log(response);
+    })
+    .catch(error => {
+      console.error('There was a problem with the Axios request:', error);
+    });
+  };
+
   return (
     <div>
       <h1>ToDo List</h1>
       <ul>
         {todos.map(todo => (
-          <li key={todo.title}>
-            {todo.title} : {todo.completed ? 'Done' : 'Not done'}
+          <li key={todo.id}>
+            {todo.title} : {todo.completed ? 'Done' : 'Not done'} 
+            <button type="submit" onClick={() => handleDelete(todo.id)}>Delete</button>
           </li>
         ))}
       </ul>

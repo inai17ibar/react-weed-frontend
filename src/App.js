@@ -39,7 +39,7 @@ export default function App() {
       <ul>
         {todos.map(todo => (
           <li key={todo.title}>
-            {todo.title} : {todo.done ? 'Done' : 'Not done'}
+            {todo.title} : {todo.completed ? 'Done' : 'Not done'}
           </li>
         ))}
       </ul>

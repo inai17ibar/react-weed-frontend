@@ -15,9 +15,18 @@ export default function App() {
     });
   }, []);
 
-  const handleSubmit = e => {
-    e.preventDefault();
-    axios.post('http://127.0.0.1:8081/addTodo', 
+  // リクエスト送信とデータの取得を行う関数
+  const fetchAndUpdateTodoList = async () => {
+    const response = await axios.get('/todos'); // サーバーからTODOリストを取得
+    const todoList = response.data; // TODOリストデータ
+
+    // TODOリストをReactコンポーネントの状態にセットして再レンダリング
+    this.setState({ todos: todoList });
+  };
+
+  const handleSubmit = async () => {
+    //e.preventDefault();
+    await axios.post('http://127.0.0.1:8081/addTodo', 
     { title: newTodo.title, completed: newTodo.completed },
     { headers: { "Content-type": "text/plain" } })
     .then(response => {
@@ -29,7 +38,8 @@ export default function App() {
     })
     .catch(function (error) {
       console.log(error);
-    });;
+    });
+    await fetchAndUpdateTodoList();
   };
 
   function handleDelete(todoId) {

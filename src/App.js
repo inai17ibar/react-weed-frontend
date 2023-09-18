@@ -17,11 +17,10 @@ export default function App() {
 
   // リクエスト送信とデータの取得を行う関数
   const fetchAndUpdateTodoList = async () => {
-    const response = await axios.get('/todos'); // サーバーからTODOリストを取得
-    const todoList = response.data; // TODOリストデータ
-
-    // TODOリストをReactコンポーネントの状態にセットして再レンダリング
-    this.setState({ todos: todoList });
+    await axios.get('http://127.0.0.1:8081/todos') 
+    .then(response => {
+      setTodos(response.data);
+    });
   };
 
   const handleSubmit = async () => {
@@ -39,19 +38,22 @@ export default function App() {
     .catch(function (error) {
       console.log(error);
     });
-    await fetchAndUpdateTodoList();
+    await fetchAndUpdateTodoList(); //errorが出てもレンダリングが走る問題
   };
 
   function handleDelete(todoId) {
     axios.delete(`http://127.0.0.1:8081/todos/delete?id=${todoId}`,
     { headers: { "Content-type": "text/plain" } }) // delete/1とかもあるがどっちがいいか
-    .then(response => {
+    .then(async (response) => {
       // リクエストが成功した場合の処理をここに追加
       console.log(response);
+      // TODOリストを更新
+      await fetchAndUpdateTodoList();
     })
     .catch(error => {
       console.error('There was a problem with the Axios request:', error);
     });
+    //await fetchAndUpdateTodoList();
   };
 
   return (

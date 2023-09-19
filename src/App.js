@@ -6,7 +6,7 @@ export default function App() {
   const [newTodo, setNewTodo] = useState({
     title: '',
     completed: false,
-  }); //
+  }); 
 
   useEffect(() => {
     axios.get('http://127.0.0.1:8081/todos')
@@ -24,7 +24,6 @@ export default function App() {
   };
 
   const handleSubmit = async () => {
-    //e.preventDefault();
     await axios.post('http://127.0.0.1:8081/addTodo', 
     { title: newTodo.title, completed: newTodo.completed },
     { headers: { "Content-type": "text/plain" } })
@@ -60,12 +59,16 @@ export default function App() {
     <div>
       <h1>ToDo List</h1>
       <ul>
-        {todos.map(todo => (
-          <li key={todo.id}>
-            {todo.title} : {todo.completed ? 'Done' : 'Not done'} 
-            <button type="submit" onClick={() => handleDelete(todo.id)}>Delete</button>
-          </li>
-        ))}
+        {todos !== null && todos.length > 0 ? (
+          todos.map(todo => (
+            <li key={todo.id}>
+              {todo.title} : {todo.completed ? 'Done' : 'Not done'} 
+              <button type="submit" onClick={() => handleDelete(todo.id)}>Delete</button>
+            </li>
+          ))
+        ) : (
+          <li>No todos to display</li>
+        )}
       </ul>
       <form onSubmit={handleSubmit}>
         <input

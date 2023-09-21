@@ -7,6 +7,7 @@ export default function App() {
     title: '',
     completed: false,
   }); 
+  const [editingTodo, setEditingTodo] = useState(null);
 
   useEffect(() => {
     axios.get('http://127.0.0.1:8081/todos')
@@ -40,6 +41,29 @@ export default function App() {
     await fetchAndUpdateTodoList(); //errorが出てもレンダリングが走る問題
   };
 
+  const handleEdit = (todoId, title) => {
+    setEditingTodo({
+      id: todoId,
+      title: title,
+    });
+  };
+
+  const handleCancelEdit = () => {
+    setEditingTodo(null);
+  };
+
+  const handleUpdate = async () => {
+    try {
+      await axios.put(`http://127.0.0.1:8081/todos/update?id=${editingTodo.id}`, editingTodo, {
+        headers: { 'Content-type': 'application/json' },
+      });
+      setEditingTodo(null);
+      await fetchAndUpdateTodoList();
+    } catch (error) {
+      console.error('Error updating TODO:', error);
+    }
+  };
+
   function handleDelete(todoId) {
     axios.delete(`http://127.0.0.1:8081/todos/delete?id=${todoId}`,
     { headers: { "Content-type": "text/plain" } }) // delete/1とかもあるがどっちがいいか
@@ -52,7 +76,6 @@ export default function App() {
     .catch(error => {
       console.error('There was a problem with the Axios request:', error);
     });
-    //await fetchAndUpdateTodoList();
   };
 
   return (
@@ -60,10 +83,27 @@ export default function App() {
       <h1>ToDo List</h1>
       <ul>
         {todos !== null && todos.length > 0 ? (
-          todos.map(todo => (
+          todos.map((todo) => (
             <li key={todo.id}>
-              {todo.title} : {todo.completed ? 'Done' : 'Not done'} 
-              <button type="submit" onClick={() => handleDelete(todo.id)}>Delete</button>
+              {editingTodo?.id === todo.id ? (
+                // 編集モード
+                <div>
+                  <input
+                    type="text"
+                    value={editingTodo.title}
+                    onChange={(e) => setEditingTodo({ ...editingTodo, title: e.target.value })}
+                  />
+                  <button onClick={handleUpdate}>Save</button>
+                  <button onClick={handleCancelEdit}>Cancel</button>
+                </div>
+              ) : (
+                // 通常表示モード
+                <div>
+                  {todo.title} : {todo.completed ? 'Done' : 'Not done'}
+                  <button onClick={() => handleEdit(todo.id, todo.title)}>Edit</button>
+                  <button onClick={() => handleDelete(todo.id)}>Delete</button>
+                </div>
+              )}
             </li>
           ))
         ) : (

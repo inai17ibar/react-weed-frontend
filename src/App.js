@@ -41,10 +41,11 @@ export default function App() {
     await fetchAndUpdateTodoList(); //errorが出てもレンダリングが走る問題
   };
 
-  const handleEdit = (todoId, title) => {
+  const handleEdit = (todoId, title, completed) => {
     setEditingTodo({
       id: todoId,
       title: title,
+      completed: completed,
     });
   };
 
@@ -57,10 +58,25 @@ export default function App() {
       await axios.put(`http://127.0.0.1:8081/todos/update?id=${editingTodo.id}`, editingTodo, {
         headers: { 'Content-type': 'application/json' },
       });
-      setEditingTodo(null);
       await fetchAndUpdateTodoList();
+      setEditingTodo(null);
     } catch (error) {
       console.error('Error updating TODO:', error);
+    }
+  };
+
+  const handleToggleComplete = (todoId) => {
+    // チェックボックスの状態をトグル（反転）させる
+    const updatedTodos = todos.map((todo) =>
+      todo.id === todoId ? { ...todo, completed: !todo.completed } : todo
+    );
+  
+    // ToDoリストを更新
+    setTodos(updatedTodos);
+
+    // editTodo の completed も変更 onChangeで2つ関数を設定できないのでこうする
+    if (editingTodo && editingTodo.id === todoId) {
+      setEditingTodo({ ...editingTodo, completed: !editingTodo.completed });
     }
   };
 
@@ -93,14 +109,19 @@ export default function App() {
                     value={editingTodo.title}
                     onChange={(e) => setEditingTodo({ ...editingTodo, title: e.target.value })}
                   />
+                  <input
+                    type="checkbox"
+                    checked={todo.completed}
+                    onChange={() => handleToggleComplete(todo.id)}/>
                   <button onClick={handleUpdate}>Save</button>
                   <button onClick={handleCancelEdit}>Cancel</button>
                 </div>
               ) : (
                 // 通常表示モード
                 <div>
-                  {todo.title} : {todo.completed ? 'Done' : 'Not done'}
-                  <button onClick={() => handleEdit(todo.id, todo.title)}>Edit</button>
+                  {todo.completed === false ? 
+                  ( todo.title ):( <strike>{todo.title}</strike> )}
+                  <button onClick={() => handleEdit(todo.id, todo.title, todo.completed)}>Edit</button>
                   <button onClick={() => handleDelete(todo.id)}>Delete</button>
                 </div>
               )}

@@ -5,8 +5,8 @@ import './App.css'
 export default function App() {
   const [todos, setTodos] = useState([]);
   const [newTodo, setNewTodo] = useState({
-    title: '',
-    completed: false,
+    Title: '',
+    Completed: false,
   }); 
   const [editingTodo, setEditingTodo] = useState(null);
   const [selectedDate, setSelectedDate] = useState('');
@@ -32,7 +32,7 @@ export default function App() {
   };
 
   const fetchTodosByDate = async () => {
-    await axios.get(`http://127.0.0.1:8081/todosByDate?created_date=${selectedDate}`)
+    await axios.get(`http://127.0.0.1:8081/todosByDate?Created_date=${selectedDate}`)
       .then((response) => {
         setTodosByDate(response.data);
       })
@@ -44,12 +44,12 @@ export default function App() {
 
   const handleSubmit = async () => {
     await axios.post('http://127.0.0.1:8081/addTodo', 
-    { title: newTodo.title, completed: newTodo.completed },
+    { Title: newTodo.Title, Completed: newTodo.Completed },
     { headers: { "Content-type": "text/plain" } })
     .then(response => {
       setNewTodo({
-        title: "",
-        completed: false
+        Title: "",
+        Completed: false
       });
       console.log(response);
     })
@@ -59,11 +59,11 @@ export default function App() {
     await fetchAndUpdateTodoList(); //errorが出てもレンダリングが走る問題
   };
 
-  const handleEdit = (todoId, title, completed) => {
+  const handleEdit = (todoId, Title, Completed) => {
     setEditingTodo({
-      id: todoId,
-      title: title,
-      completed: completed,
+      ID: todoId,
+      Title: Title,
+      Completed: Completed,
     });
   };
 
@@ -73,7 +73,7 @@ export default function App() {
 
   const handleUpdate = async () => {
     try {
-      await axios.put(`http://127.0.0.1:8081/todos/update?id=${editingTodo.id}`, editingTodo, {
+      await axios.put(`http://127.0.0.1:8081/todos/update?ID=${editingTodo.ID}`, editingTodo, {
         headers: { 'Content-type': 'application/json' },
       });
       await fetchAndUpdateTodoList();
@@ -86,20 +86,20 @@ export default function App() {
   const handleToggleComplete = (todoId) => {
     // チェックボックスの状態をトグル（反転）させる
     const updatedTodos = todos.map((todo) =>
-      todo.id === todoId ? { ...todo, completed: !todo.completed } : todo
+      todo.ID === todoId ? { ...todo, Completed: !todo.Completed } : todo
     );
   
     // ToDoリストを更新
     setTodos(updatedTodos);
 
-    // editTodo の completed も変更 onChangeで2つ関数を設定できないのでこうする
-    if (editingTodo && editingTodo.id === todoId) {
-      setEditingTodo({ ...editingTodo, completed: !editingTodo.completed });
+    // editTodo の Completed も変更 onChangeで2つ関数を設定できないのでこうする
+    if (editingTodo && editingTodo.ID === todoId) {
+      setEditingTodo({ ...editingTodo, Completed: !editingTodo.Completed });
     }
   };
 
   function handleDelete(todoId) {
-    axios.delete(`http://127.0.0.1:8081/todos/delete?id=${todoId}`,
+    axios.delete(`http://127.0.0.1:8081/todos/delete?ID=${todoId}`,
     { headers: { "Content-type": "text/plain" } }) // delete/1とかもあるがどっちがいいか
     .then(async (response) => {
       // リクエストが成功した場合の処理をここに追加
@@ -119,29 +119,29 @@ export default function App() {
       <ul>
         {todos !== null && todos.length > 0 ? (
           todos.map((todo) => (
-            <li key={todo.id}>
-              {editingTodo?.id === todo.id ? (
+            <li key={todo.ID}>
+              {editingTodo?.ID === todo.ID ? (
                 // 編集モード
                 <div>
                   <input
                     type="text"
-                    value={editingTodo.title}
-                    onChange={(e) => setEditingTodo({ ...editingTodo, title: e.target.value })}
+                    value={editingTodo.Title}
+                    onChange={(e) => setEditingTodo({ ...editingTodo, Title: e.target.value })}
                   />
                   <input
                     type="checkbox"
-                    checked={todo.completed}
-                    onChange={() => handleToggleComplete(todo.id)}/>
+                    checked={todo.Completed}
+                    onChange={() => handleToggleComplete(todo.ID)}/>
                   <button onClick={handleUpdate}>Save</button>
                   <button onClick={handleCancelEdit}>Cancel</button>
                 </div>
               ) : (
                 // 通常表示モード
                 <div>
-                  {todo.completed === false ? 
-                  ( todo.title ):( <strike>{todo.title}</strike> )}
-                  <button onClick={() => handleEdit(todo.id, todo.title, todo.completed)}>Edit</button>
-                  <button onClick={() => handleDelete(todo.id)}>Delete</button>
+                  {todo.Completed === false ? 
+                  ( todo.Title ):( <strike>{todo.Title}</strike> )}
+                  <button onClick={() => handleEdit(todo.ID, todo.Title, todo.Completed)}>Edit</button>
+                  <button onClick={() => handleDelete(todo.ID)}>Delete</button>
                 </div>
               )}
             </li>
@@ -155,13 +155,13 @@ export default function App() {
       <form onSubmit={handleSubmit}>
         <input
           type="text"
-          value={newTodo.title}
-          onChange={e => setNewTodo({ ...newTodo, title: e.target.value })}
+          value={newTodo.Title}
+          onChange={e => setNewTodo({ ...newTodo, Title: e.target.value })}
         />
         <input
           type="checkbox"
-          checked={newTodo.completed}
-          onChange={e => setNewTodo({ ...newTodo, completed: e.target.checked })}
+          checked={newTodo.Completed}
+          onChange={e => setNewTodo({ ...newTodo, Completed: e.target.checked })}
         />
         <button type="submit">Add</button>
       </form>

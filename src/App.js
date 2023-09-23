@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import './App.css'
 
 export default function App() {
   const [todos, setTodos] = useState([]);
@@ -8,6 +9,8 @@ export default function App() {
     completed: false,
   }); 
   const [editingTodo, setEditingTodo] = useState(null);
+  const [selectedDate, setSelectedDate] = useState('');
+  const [todosByDate, setTodosByDate] = useState([]);
 
   useEffect(() => {
     axios.get('http://127.0.0.1:8081/todos')
@@ -23,6 +26,21 @@ export default function App() {
       setTodos(response.data);
     });
   };
+
+  const handleDateChange = (e) => {
+    setSelectedDate(e.target.value);
+  };
+
+  const fetchTodosByDate = async () => {
+    await axios.get(`http://127.0.0.1:8081/todosByDate?created_date=${selectedDate}`)
+      .then((response) => {
+        setTodosByDate(response.data);
+      })
+      .catch((error) => {
+        console.error('Error fetching todos:', error);
+      });
+  };
+
 
   const handleSubmit = async () => {
     await axios.post('http://127.0.0.1:8081/addTodo', 
@@ -97,6 +115,7 @@ export default function App() {
   return (
     <div>
       <h1>ToDo List</h1>
+      <div className="todo-list-container">
       <ul>
         {todos !== null && todos.length > 0 ? (
           todos.map((todo) => (
@@ -131,6 +150,8 @@ export default function App() {
           <li>No todos to display</li>
         )}
       </ul>
+      </div>
+
       <form onSubmit={handleSubmit}>
         <input
           type="text"
@@ -144,6 +165,17 @@ export default function App() {
         />
         <button type="submit">Add</button>
       </form>
+
+      <div>
+        <label>Select Date: </label>
+        <input
+          type="date"
+          value={selectedDate}
+          onChange={handleDateChange}
+        />
+        <button onClick={fetchTodosByDate}>Fetch Todos</button>
+        The Date Todo Count : {todosByDate === null ? 0 : todosByDate.length}
+      </div>
     </div>
   );
 }

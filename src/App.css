@@ -94,7 +94,7 @@ ul {
   list-style-type: none;
 }
 
-li {
+/* li {
   border: 1px solid #aaa;
   border-radius: 6px;
   float: left;
@@ -103,4 +103,15 @@ li {
   padding: 5px;
   width: 70px;
   height: 100px;
+} */
+
+.todo-list-container {
+  max-height: 150px; /* 固定の高さを設定 */
+  overflow-y: auto; /* Y軸方向のスクロールを有効にする */
+  border: 1px solid #ccc; /* ボーダーを追加（任意） */
+  padding: 10px; /* 内側の余白を追加（任意） */
+}
+
+.todo-list {
+  /* TODOリストのスタイルを追加（任意） */
 }

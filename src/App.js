@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import './App.css'
+import TodoItem from './TodoItem';
+import TodoForm from './TodoForm';
+import DateSelector from './DateSelector';
+import './App.css';
 
 export default function App() {
   const [todos, setTodos] = useState([]);
@@ -116,66 +119,16 @@ export default function App() {
     <div>
       <h1>ToDo List</h1>
       <div className="todo-list-container">
-      <ul>
-        {todos !== null && todos.length > 0 ? (
-          todos.map((todo) => (
-            <li key={todo.ID}>
-              {editingTodo?.ID === todo.ID ? (
-                // 編集モード
-                <div>
-                  <input
-                    type="text"
-                    value={editingTodo.Title}
-                    onChange={(e) => setEditingTodo({ ...editingTodo, Title: e.target.value })}
-                  />
-                  <input
-                    type="checkbox"
-                    checked={todo.Completed}
-                    onChange={() => handleToggleComplete(todo.ID)}/>
-                  <button onClick={handleUpdate}>Save</button>
-                  <button onClick={handleCancelEdit}>Cancel</button>
-                </div>
-              ) : (
-                // 通常表示モード
-                <div>
-                  {todo.Completed === false ? 
-                  ( todo.Title ):( <strike>{todo.Title}</strike> )}
-                  <button onClick={() => handleEdit(todo.ID, todo.Title, todo.Completed)}>Edit</button>
-                  <button onClick={() => handleDelete(todo.ID)}>Delete</button>
-                </div>
-              )}
-            </li>
-          ))
-        ) : (
-          <li>No todos to display</li>
-        )}
-      </ul>
+        <ul>
+          {todos.length > 0 ? (
+            todos.map((todo) => <TodoItem key={todo.ID} todo={todo} onEdit={handleEdit} onDelete={handleDelete} onToggleComplete={handleToggleComplete} />)
+          ) : (
+            <li>No todos to display</li>
+          )}
+        </ul>
       </div>
-
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          value={newTodo.Title}
-          onChange={e => setNewTodo({ ...newTodo, Title: e.target.value })}
-        />
-        <input
-          type="checkbox"
-          checked={newTodo.Completed}
-          onChange={e => setNewTodo({ ...newTodo, Completed: e.target.checked })}
-        />
-        <button type="submit">Add</button>
-      </form>
-
-      <div>
-        <label>Select Date: </label>
-        <input
-          type="date"
-          value={selectedDate}
-          onChange={handleDateChange}
-        />
-        <button onClick={fetchTodosByDate}>Fetch Todos</button>
-        The Date Todo Count : {todosByDate === null ? 0 : todosByDate.length}
-      </div>
+      <TodoForm newTodo={newTodo} onSubmit={handleSubmit} onTodoChange={handleTodoChange} onCompletedChange={handleCompletedChange} />
+      <DateSelector selectedDate={selectedDate} onDateChange={handleDateChange} onFetchTodos={fetchTodosByDate} todosByDate={todosByDate} />
     </div>
   );
 }

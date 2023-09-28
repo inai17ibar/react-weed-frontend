@@ -32,8 +32,8 @@ function TodoItem({ todo, onEdit, onUpdate, onDelete, onToggleComplete }) {
           {isEditing && (
         <input
           type="checkbox"
-          checked={todo.Completed}
-          onChange={() => onToggleComplete(todo.ID)}
+          checked={editedTodo.Completed}
+          onChange={() => setEditedTodo({ ...editedTodo, Completed: !editedTodo.Completed })}
         />
       )}
           <button onClick={handleUpdate}>Save</button>

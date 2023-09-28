@@ -75,6 +75,36 @@ export default function App() {
     await fetchAndUpdateTodoList(); //errorが出てもレンダリングが走る問題
   };
 
+  const handleUpdate = async (editedTodo) => {
+    try {
+      //if(!editedTodo) return;
+      console.log(`Sending PUT request to: http://127.0.0.1:8081/todos/update?ID=${editedTodo.ID} with data:`, editedTodo);
+      await axios.put(`http://127.0.0.1:8081/todos/update?ID=${editedTodo.ID}`, editedTodo, {
+        headers: { 'Content-type': "application/json" },
+      });
+      
+      setEditingTodo(null);
+      await fetchAndUpdateTodoList();
+    } catch (error) {
+      console.error('Axios encountered an error:', error); // エラーオブジェクト全体を出力
+      if (error.response) {
+          // サーバからのレスポンスがある場合
+          console.error('Response data:', error.response.data); // サーバからのレスポンスボディ
+          console.error('Response status:', error.response.status); // HTTPステータスコード
+      } else if (error.request) {
+          // リクエストは作成されたが、レスポンスがない場合
+          console.error('No response received:', error.request);
+      } else {
+          // リクエストの作成時に何かが問題になった場合
+          console.error('Error message:', error.message);
+      }
+  }
+  };
+  
+  // const handleCancelEdit = () => {
+  //   setEditingTodo(null);
+  // };
+
   const handleEdit = (todoId, Title, Completed) => {
     setEditingTodo({
       ID: todoId,
@@ -118,7 +148,7 @@ export default function App() {
       <div className="todo-list-container">
         <ul>
           {todos.length > 0 ? (
-            todos.map((todo) => <TodoItem key={todo.ID} todo={todo} onEdit={handleEdit} onDelete={handleDelete} onToggleComplete={handleToggleComplete} />)
+            todos.map((todo) => <TodoItem key={todo.ID} todo={todo} onEdit={handleEdit} onUpdate={handleUpdate} onDelete={handleDelete} onToggleComplete={handleToggleComplete} />)
           ) : (
             <li>No todos to display</li>
           )}

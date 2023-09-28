@@ -70,22 +70,6 @@ export default function App() {
     });
   };
 
-  const handleCancelEdit = () => {
-    setEditingTodo(null);
-  };
-
-  const handleUpdate = async () => {
-    try {
-      await axios.put(`http://127.0.0.1:8081/todos/update?ID=${editingTodo.ID}`, editingTodo, {
-        headers: { 'Content-type': 'application/json' },
-      });
-      await fetchAndUpdateTodoList();
-      setEditingTodo(null);
-    } catch (error) {
-      console.error('Error updating TODO:', error);
-    }
-  };
-
   const handleToggleComplete = (todoId) => {
     // チェックボックスの状態をトグル（反転）させる
     const updatedTodos = todos.map((todo) =>

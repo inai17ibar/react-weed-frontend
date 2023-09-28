@@ -30,6 +30,20 @@ export default function App() {
     });
   };
 
+  const handleTodoChange = (e) => {
+    setNewTodo({
+      ...newTodo,
+      Title: e.target.value
+    });
+  };
+
+  const handleCompletedChange = (e) => {
+    setNewTodo({
+      ...newTodo,
+      Completed: e.target.checked
+    });
+  };
+
   const handleDateChange = (e) => {
     setSelectedDate(e.target.value);
   };
@@ -43,7 +57,6 @@ export default function App() {
         console.error('Error fetching todos:', error);
       });
   };
-
 
   const handleSubmit = async () => {
     await axios.post('http://127.0.0.1:8081/addTodo', 

@@ -3,7 +3,7 @@ import React from 'react';
 
 function TodoForm({ newTodo, onSubmit, onTodoChange, onCompletedChange }) {
   return (
-    <form onSubmit={onSubmit}>
+    <form data-testid="form" onSubmit={onSubmit}>
       <input
         type="text"
         value={newTodo.Title}
@@ -14,7 +14,7 @@ function TodoForm({ newTodo, onSubmit, onTodoChange, onCompletedChange }) {
         checked={newTodo.Completed}
         onChange={onCompletedChange}
       />
-      <button type="submit">Add</button>
+      <button data-testid="add-button" type="submit">Add</button>
     </form>
   );
 }

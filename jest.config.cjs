@@ -1,8 +1,6 @@
 module.exports = {
     testEnvironment: 'jsdom',
     moduleFileExtensions: [
-      "ts",
-      "tsx",
       "js"
     ],
     moduleNameMapper: {

@@ -17,6 +17,7 @@ export default function App() {
   const [todosByDate, setTodosByDate] = useState([]);
   const [isLoading, setIsLoading] = useState(true); // ローディング状態
   const [error, setError] = useState(null); // エラーハンドリング
+  const [showCompleted, setShowCompleted] = useState(true);
 
   useEffect(() => {
     axios.get('http://127.0.0.1:8081/todos')
@@ -171,12 +172,30 @@ export default function App() {
       ) : (
         <ul>
           {todos.length > 0 ? (
-            todos.map((todo) => <TodoItem key={todo.ID} todo={todo} onEdit={handleEdit} onUpdate={handleUpdate} onDelete={handleDelete} onToggleComplete={handleToggleComplete} />)
+            todos.filter((todo) => showCompleted || !todo.Completed)
+              .map((todo) => (
+                <TodoItem
+                  key={todo.ID}
+                  todo={todo}
+                  onEdit={handleEdit}
+                  onUpdate={handleUpdate}
+                  onDelete={handleDelete}
+                  onToggleComplete={handleToggleComplete}
+                />
+              ))
           ) : (
             <li>No todos to display</li>
           )}
         </ul>
       )}
+    <label>
+      <input
+        type="checkbox"
+        checked={showCompleted}
+        onChange={() => setShowCompleted(!showCompleted)}
+      />
+      Show Completed Todos
+    </label>
     </div>
     <TodoForm newTodo={newTodo} onSubmit={handleSubmit} onTodoChange={handleTodoChange} onCompletedChange={handleCompletedChange} />
     <DateSelector selectedDate={selectedDate} onDateChange={handleDateChange} onFetchTodos={fetchTodosByDate} todosByDate={todosByDate} />

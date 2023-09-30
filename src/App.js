@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import {TailSpin} from 'react-loader-spinner'; // 必要に応じてインストールしてください
 import TodoItem from './TodoItem';
 import TodoForm from './TodoForm';
 import DateSelector from './DateSelector';
@@ -14,12 +15,21 @@ export default function App() {
   const [editingTodo, setEditingTodo] = useState(null);
   const [selectedDate, setSelectedDate] = useState('');
   const [todosByDate, setTodosByDate] = useState([]);
+  const [isLoading, setIsLoading] = useState(true); // ローディング状態
+  const [error, setError] = useState(null); // エラーハンドリング
 
   useEffect(() => {
     axios.get('http://127.0.0.1:8081/todos')
     .then(response => {
       console.log(response.data); // ここで応答データをログに出力
       setTodos(response.data);
+    })
+    .catch(error => {
+      console.error('Error fetching data: ', error);
+      setError(error); // エラーをセット
+    })
+    .finally(() => {
+      setIsLoading(false); // ロードが完了したら、ローディング状態をfalseに設定
     });
   }, []);
 
@@ -145,8 +155,20 @@ export default function App() {
 
   return (
     <div>
-      <h1>ToDo List</h1>
-      <div className="todo-list-container">
+    <h1>ToDo List</h1>
+    <div className="todo-list-container">
+      {isLoading ? (
+        <div className="loader-container">
+        <TailSpin 
+          type="TailSpin" 
+          color="#00BFFF" 
+          height={80} 
+          width={80} 
+        />
+      </div>
+      ) : error ? (
+        <p>Error loading todos!</p>
+      ) : (
         <ul>
           {todos.length > 0 ? (
             todos.map((todo) => <TodoItem key={todo.ID} todo={todo} onEdit={handleEdit} onUpdate={handleUpdate} onDelete={handleDelete} onToggleComplete={handleToggleComplete} />)
@@ -154,9 +176,10 @@ export default function App() {
             <li>No todos to display</li>
           )}
         </ul>
-      </div>
-      <TodoForm newTodo={newTodo} onSubmit={handleSubmit} onTodoChange={handleTodoChange} onCompletedChange={handleCompletedChange} />
-      <DateSelector selectedDate={selectedDate} onDateChange={handleDateChange} onFetchTodos={fetchTodosByDate} todosByDate={todosByDate} />
+      )}
     </div>
+    <TodoForm newTodo={newTodo} onSubmit={handleSubmit} onTodoChange={handleTodoChange} onCompletedChange={handleCompletedChange} />
+    <DateSelector selectedDate={selectedDate} onDateChange={handleDateChange} onFetchTodos={fetchTodosByDate} todosByDate={todosByDate} />
+  </div>
   );
 }

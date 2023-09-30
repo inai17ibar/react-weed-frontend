@@ -3,7 +3,7 @@ import React from 'react';
 
 function TodoForm({ newTodo, onSubmit, onTodoChange, onCompletedChange }) {
   return (
-    <form data-testid="form" onSubmit={onSubmit}>
+    <form data-testid="add-form" onSubmit={onSubmit}>
       <input
         type="text"
         value={newTodo.Title}

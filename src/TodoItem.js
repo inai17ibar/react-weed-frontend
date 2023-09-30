@@ -45,8 +45,7 @@ function TodoItem({ todo, onEdit, onUpdate, onDelete, onToggleComplete }) {
           <button onClick={handleEdit}>Edit</button>
         </>
       )}
-
-      <button onClick={() => onDelete(todo.ID)}>Delete</button>
+      <button data-testid={`delete-button-${todo.ID}`} onClick={() => onDelete(todo.ID)}>Delete</button>
     </li>
   );
 }

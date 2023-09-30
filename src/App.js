@@ -18,6 +18,7 @@ export default function App() {
   useEffect(() => {
     axios.get('http://127.0.0.1:8081/todos')
     .then(response => {
+      console.log(response.data); // ここで応答データをログに出力
       setTodos(response.data);
     });
   }, []);

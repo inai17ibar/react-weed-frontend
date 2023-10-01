@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import TodoListComponent from './TodoListComponent';
 import CommitListComponent from './CommitListComponent';
+import ErrorPage from './ErrorPage';
 import './App.css';
 
 export default function App() {
@@ -160,6 +161,17 @@ export default function App() {
     });
   };
 
+  const handleRetry = () => {
+    setError(false); // エラーステートをリセット
+    // 何らかのアクション、例えば再度 API を呼び出す等
+  };
+
+  if(error) {
+    return (
+      <ErrorPage onRetry={handleRetry} />
+    );
+  }else{
+
   return (
     <div>
       {activeTab === 'todos' ? (<h1>ToDo List</h1>) : (<h1>Commits List</h1>)}
@@ -196,4 +208,5 @@ export default function App() {
       </div>
     </div>
   );
+  }
 }

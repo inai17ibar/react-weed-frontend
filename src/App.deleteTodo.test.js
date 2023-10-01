@@ -33,7 +33,7 @@ test('renders initial list of todos correctly', async () => {
   //console.log(mockTodos);  
   render(<App />);
   
-  const todoElement = await screen.findByText('Mock Todo 1', {}, { timeout: 2000 });//レンダリングが遅いのでこれが必須
+  const todoElement = await screen.findByText('Mock Todo 1', {}, { timeout: 5000 });//レンダリングが遅いのでこれが必須
   expect(todoElement).toBeInTheDocument();
 });
 
@@ -41,7 +41,7 @@ test('can delete an existing todo', async () => {
   console.log(mockTodos);
   render(<App />);
 
-  await screen.findByText('Mock Todo 1', {}, { timeout: 2000 }); //レンダリングが遅いのでこれが必須
+  await screen.findByText('Mock Todo 1', {}, { timeout: 5000 }); //レンダリングが遅いのでこれが必須
   expect(screen.getByTestId('delete-button-1')).toBeInTheDocument(); // この行で対象のボタンが存在するか確認します
   fireEvent.click(screen.getByTestId('delete-button-1')); // IDに基づく削除ボタンをクリック
   

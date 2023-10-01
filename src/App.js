@@ -4,6 +4,7 @@ import TodoListComponent from './TodoListComponent';
 import CommitListComponent from './CommitListComponent';
 import ErrorPage from './ErrorPage';
 import './App.css';
+import { BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid } from 'recharts';
 
 export default function App() {
   const [todos, setTodos] = useState([]);
@@ -19,6 +20,7 @@ export default function App() {
   const [showCompleted, setShowCompleted] = useState(true);
   const [activeTab, setActiveTab] = useState('todos');
   const [commits, setCommits] = useState([]);
+  const [commitData, setCommitData] = useState([]);
 
   useEffect(() => {
     axios.get('http://127.0.0.1:8081/todos')
@@ -38,6 +40,16 @@ export default function App() {
     .then(response => {
       console.log(response.data); // ここで応答データをログに出力
       setCommits(response.data);
+    })
+    .catch(error => {
+      console.error('Error fetching data: ', error);
+      setError(error); // エラーをセット
+    })
+
+    axios.get('http://127.0.0.1:8081/commitDataByDate')
+    .then(response => {
+      console.log(response.data); // ここで応答データをログに出力
+      setCommitData(response.data);
     })
     .catch(error => {
       console.error('Error fetching data: ', error);
@@ -203,7 +215,16 @@ export default function App() {
         />
       ) : (
         // MyCommit データのリストをここにレンダリング
+        <div>
         <CommitListComponent commits={commits}/>
+        <BarChart width={500} height={200} data={commitData}>
+          <XAxis dataKey="Date" />
+          <YAxis domain={[0, 100000]}/>
+          <Tooltip />
+          <CartesianGrid stroke="#f5f5f5" />
+          <Bar dataKey="Total" fill="#ff7300" />
+        </BarChart>
+        </div>
       )}
       </div>
     </div>

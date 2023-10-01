@@ -73,18 +73,34 @@ form {
   margin: 5px;
 }
 
+.commit-list-container {
+  background-color: #f4f4f4;
+  border-radius: 8px;
+  overflow-y: auto;
+  max-height: 300px;
+  width: 400px;
+  margin: auto;
+}
+
 .commit-list-container ul {
   list-style-type: none;
   padding: 0;
+  margin: 0;
 }
 
 .commit-list-container li {
-  padding: 10px;
-  border-bottom: 1px solid #eee;
+  background-color: #fff;
+  margin: 10px;
+  padding: 15px;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.commit-list-container li:last-child {
-  border-bottom: none;
+.commit-list-container li p {
+  margin: 0;
+  padding: 0;
+  color: #555;
+  font-family: 'Arial', sans-serif;
 }
 
 

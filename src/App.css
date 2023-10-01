@@ -22,6 +22,11 @@ ul {
   padding: 0;
 }
 
+.todo-list-container ul {
+  max-height: 300px; /* または任意の値 */
+  overflow-y: auto;
+}
+
 li {
   padding: 10px;
   border-bottom: 1px solid #eee;

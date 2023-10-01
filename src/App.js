@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import {TailSpin} from 'react-loader-spinner'; // 必要に応じてインストールしてください
-import TodoItem from './TodoItem';
-import TodoForm from './TodoForm';
-import DateSelector from './DateSelector';
+import TodoListComponent from './TodoListComponent';
+import CommitListComponent from './CommitListComponent';
 import './App.css';
 
 export default function App() {
@@ -18,6 +16,8 @@ export default function App() {
   const [isLoading, setIsLoading] = useState(true); // ローディング状態
   const [error, setError] = useState(null); // エラーハンドリング
   const [showCompleted, setShowCompleted] = useState(true);
+  const [activeTab, setActiveTab] = useState('todos');
+  const [commits, setCommits] = useState([]);
 
   useEffect(() => {
     axios.get('http://127.0.0.1:8081/todos')
@@ -32,6 +32,16 @@ export default function App() {
     .finally(() => {
       setIsLoading(false); // ロードが完了したら、ローディング状態をfalseに設定
     });
+
+    axios.get('http://127.0.0.1:8081/commits')
+    .then(response => {
+      console.log(response.data); // ここで応答データをログに出力
+      setCommits(response.data);
+    })
+    .catch(error => {
+      console.error('Error fetching data: ', error);
+      setError(error); // エラーをセット
+    })
   }, []);
 
   // リクエスト送信とデータの取得を行う関数
@@ -112,10 +122,6 @@ export default function App() {
       }
   }
   };
-  
-  // const handleCancelEdit = () => {
-  //   setEditingTodo(null);
-  // };
 
   const handleEdit = (todoId, Title, Completed) => {
     setEditingTodo({
@@ -156,49 +162,38 @@ export default function App() {
 
   return (
     <div>
-    <h1>ToDo List</h1>
-    <div className="todo-list-container">
-      {isLoading ? (
-        <div className="loader-container">
-        <TailSpin 
-          type="TailSpin" 
-          color="#00BFFF" 
-          height={80} 
-          width={80} 
-        />
+      {activeTab === 'todos' ? (<h1>ToDo List</h1>) : (<h1>Commits List</h1>)}
+     <div>
+      <div className="tab-container">
+        <button onClick={() => setActiveTab('todos')}>Todos</button>
+        <button onClick={() => setActiveTab('commits')}>Commits</button>
       </div>
-      ) : error ? (
-        <p>Error loading todos!</p>
+      {activeTab === 'todos' ? (
+        // TodoList の UI をここにレンダリング
+        <TodoListComponent 
+          todos={todos}
+          isLoading={isLoading}
+          error={error}
+          showCompleted={showCompleted}
+          setShowCompleted={setShowCompleted}
+          newTodo={newTodo}
+          handleSubmit={handleSubmit}
+          handleTodoChange={handleTodoChange}
+          handleCompletedChange={handleCompletedChange}
+          handleEdit={handleEdit}
+          handleUpdate={handleUpdate}
+          handleDelete={handleDelete}
+          handleToggleComplete={handleToggleComplete}
+          selectedDate={selectedDate}
+          handleDateChange={handleDateChange}
+          fetchTodosByDate={fetchTodosByDate}
+          todosByDate={todosByDate}
+        />
       ) : (
-        <ul>
-          {todos.length > 0 ? (
-            todos.filter((todo) => showCompleted || !todo.Completed)
-              .map((todo) => (
-                <TodoItem
-                  key={todo.ID}
-                  todo={todo}
-                  onEdit={handleEdit}
-                  onUpdate={handleUpdate}
-                  onDelete={handleDelete}
-                  onToggleComplete={handleToggleComplete}
-                />
-              ))
-          ) : (
-            <li>No todos to display</li>
-          )}
-        </ul>
+        // MyCommit データのリストをここにレンダリング
+        <CommitListComponent commits={commits}/>
       )}
-    <label>
-      <input
-        type="checkbox"
-        checked={showCompleted}
-        onChange={() => setShowCompleted(!showCompleted)}
-      />
-      Show Completed Todos
-    </label>
+      </div>
     </div>
-    <TodoForm newTodo={newTodo} onSubmit={handleSubmit} onTodoChange={handleTodoChange} onCompletedChange={handleCompletedChange} />
-    <DateSelector selectedDate={selectedDate} onDateChange={handleDateChange} onFetchTodos={fetchTodosByDate} todosByDate={todosByDate} />
-  </div>
   );
 }

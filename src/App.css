@@ -67,3 +67,24 @@ form {
   justify-content: center;
 }
 
+.tab-container button {
+  cursor: pointer;
+  padding: 10px;
+  margin: 5px;
+}
+
+.commit-list-container ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.commit-list-container li {
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+}
+
+.commit-list-container li:last-child {
+  border-bottom: none;
+}
+
+

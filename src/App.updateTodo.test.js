@@ -10,6 +10,13 @@ import '@testing-library/jest-dom';
 let mockTodos = [
     { ID: 1, Title: 'Mock Todo 1', Completed: false },
 ];
+let mockCommits = [
+  { ID: 1, Sha: "aaaaa", Message: "Message1", Date: "2023-10-01", Additions: 0, Deletions: 0, Total: 1 },
+  { ID: 2, Sha: "bbbbb", Message: "Message2", Date: "2023-10-02", Additions: 1, Deletions: 1, Total: 2 },
+  { ID: 3, Sha: "ccccc", Message: "Message3", Date: "2023-10-03", Additions: 2, Deletions: 2, Total: 4 },
+  { ID: 4, Sha: "ddddd", Message: "Message4", Date: "2023-10-04", Additions: 3, Deletions: 3, Total: 6 },
+  { ID: 5, Sha: "eeeee", Message: "Message5", Date: "2023-10-05", Additions: 4, Deletions: 4, Total: 8 },
+];
 
 // eslint-disable-next-line no-const-assign
 const server = setupServer(
@@ -17,7 +24,10 @@ const server = setupServer(
     console.log('GET /todos request received'); // ここでリクエストを受け取ったことを確認
     return res(ctx.json(mockTodos)); // モックのTodosをレスポンスとして返す
 }),
-
+rest.get('http://127.0.0.1:8081/commits', (req, res, ctx) => {
+    console.log('GET /commits request received'); // ここでリクエストを受け取ったことを確認
+    return res(ctx.json(mockCommits)); // モックのTodosをレスポンスとして返す
+  }),
 rest.put('http://127.0.0.1:8081/todos/update', (req, res, ctx) => {
   const updateTodo = { Title: 'Update Todo', Completed: false };
   mockTodos.Title = updateTodo.Title;

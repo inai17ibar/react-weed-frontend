@@ -18,6 +18,30 @@ let mockCommits = [
   { ID: 5, Sha: "eeeee", Message: "Message5", Date: "2023-10-05", Additions: 4, Deletions: 4, Total: 8 },
 ];
 
+let mockCommitData = [
+  {
+      Date:      "2023-10-01",
+      Count:     5,
+      Additions: 10,
+      Deletions: 2,
+      Total:     12,
+  },
+  {
+      Date:      "2023-10-02",
+      Count:     3,
+      Additions: 8,
+      Deletions: 1,
+      Total:     9,
+  },
+  {
+      Date:      "2023-10-03",
+      Count:     2,
+      Additions: 4,
+      Deletions: 0,
+      Total:     4,
+  },
+]
+
 // eslint-disable-next-line no-const-assign
 const server = setupServer(
   rest.get('http://127.0.0.1:8081/todos', (req, res, ctx) => {
@@ -30,7 +54,7 @@ const server = setupServer(
   }),
   rest.get('http://127.0.0.1:8081/commitDataByDate', (req, res, ctx) => {
       console.log('GET /commitDataByDate request received'); // ここでリクエストを受け取ったことを確認
-      return res(ctx.json(mockCommits)); // モックのTodosをレスポンスとして返す
+      return res(ctx.json(mockCommitData)); // モックのTodosをレスポンスとして返す
     }),
   // ToDoの削除
   rest.delete('http://127.0.0.1:8081/todos/delete', (req, res, ctx) => {

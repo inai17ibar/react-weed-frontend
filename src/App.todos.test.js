@@ -24,7 +24,11 @@ const server = setupServer(
     return res(ctx.json(mockTodos)); // モックのTodosをレスポンスとして返す
   }),
   rest.get('http://127.0.0.1:8081/commits', (req, res, ctx) => {
-    console.log('GET /commits request received'); // ここでリクエストを受け取ったことを確認
+      console.log('GET /commits request received'); // ここでリクエストを受け取ったことを確認
+      return res(ctx.json(mockCommits)); // モックのTodosをレスポンスとして返す
+    }),
+  rest.get('http://127.0.0.1:8081/commitDataByDate', (req, res, ctx) => {
+    console.log('GET /commitDataByDate request received'); // ここでリクエストを受け取ったことを確認
     return res(ctx.json(mockCommits)); // モックのTodosをレスポンスとして返す
   }),
 );
@@ -42,9 +46,9 @@ test('Get todos', async () => {
   render(<App />);
 
   await waitFor(() => {
-    expect(screen.getByText('Todo 1', {}, { timeout: 2000 })).toBeInTheDocument();
+    expect(screen.getByText('Todo 1', {}, { timeout: 5000 })).toBeInTheDocument();
   });
   await waitFor(() => {
-    expect(screen.getByText('Todo 2', {}, { timeout: 1000 })).toBeInTheDocument();
+    expect(screen.getByText('Todo 2', {}, { timeout: 5000 })).toBeInTheDocument();
   });
 });

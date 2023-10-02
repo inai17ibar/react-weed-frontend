@@ -23,17 +23,21 @@ const server = setupServer(
   rest.get('http://127.0.0.1:8081/todos', (req, res, ctx) => {
     console.log('GET /todos request received'); // ここでリクエストを受け取ったことを確認
     return res(ctx.json(mockTodos)); // モックのTodosをレスポンスとして返す
-}),
-rest.get('http://127.0.0.1:8081/commits', (req, res, ctx) => {
-    console.log('GET /commits request received'); // ここでリクエストを受け取ったことを確認
-    return res(ctx.json(mockCommits)); // モックのTodosをレスポンスとして返す
   }),
-rest.put('http://127.0.0.1:8081/todos/update', (req, res, ctx) => {
-  const updateTodo = { Title: 'Update Todo', Completed: false };
-  mockTodos.Title = updateTodo.Title;
-  mockTodos.Completed = updateTodo.Completed;
-  return res(ctx.json(mockTodos));
-}),
+  rest.get('http://127.0.0.1:8081/commits', (req, res, ctx) => {
+      console.log('GET /commits request received'); // ここでリクエストを受け取ったことを確認
+      return res(ctx.json(mockCommits)); // モックのTodosをレスポンスとして返す
+    }),
+  rest.get('http://127.0.0.1:8081/commitDataByDate', (req, res, ctx) => {
+      console.log('GET /commitDataByDate request received'); // ここでリクエストを受け取ったことを確認
+      return res(ctx.json(mockCommits)); // モックのTodosをレスポンスとして返す
+    }),
+  rest.put('http://127.0.0.1:8081/todos/update', (req, res, ctx) => {
+    const updateTodo = { Title: 'Update Todo', Completed: false };
+    mockTodos.Title = updateTodo.Title;
+    mockTodos.Completed = updateTodo.Completed;
+    return res(ctx.json(mockTodos));
+  }),
 );
 
 beforeAll(() => server.listen());

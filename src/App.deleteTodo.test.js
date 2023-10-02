@@ -28,6 +28,10 @@ const server = setupServer(
     console.log('GET /commits request received'); // ここでリクエストを受け取ったことを確認
     return res(ctx.json(mockCommits)); // モックのTodosをレスポンスとして返す
   }),
+  rest.get('http://127.0.0.1:8081/commitDataByDate', (req, res, ctx) => {
+      console.log('GET /commitDataByDate request received'); // ここでリクエストを受け取ったことを確認
+      return res(ctx.json(mockCommits)); // モックのTodosをレスポンスとして返す
+    }),
   // ToDoの削除
   rest.delete('http://127.0.0.1:8081/todos/delete', (req, res, ctx) => {
     mockTodos = mockTodos.filter(todo => todo.ID.toString() !== req.url.searchParams.get('ID'));

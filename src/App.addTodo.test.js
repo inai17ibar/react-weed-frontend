@@ -24,6 +24,10 @@ const server = setupServer(
     console.log('GET /commits request received'); // ここでリクエストを受け取ったことを確認
     return res(ctx.json(mockCommits)); // モックのTodosをレスポンスとして返す
   }),
+  rest.get('http://127.0.0.1:8081/commitDataByDate', (req, res, ctx) => {
+      console.log('GET /commitDataByDate request received'); // ここでリクエストを受け取ったことを確認
+      return res(ctx.json(mockCommits)); // モックのTodosをレスポンスとして返す
+    }),
   // Todoの追加
   rest.post('http://127.0.0.1:8081/addTodo', (req, res, ctx) => {
     const newTodo = { ID: mockTodos.length + 1, Title: 'New Todo', Completed: false };

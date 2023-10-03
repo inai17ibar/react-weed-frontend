@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import TodoListComponent from './TodoListComponent';
-import CommitListComponent from './CommitListComponent';
-import ErrorPage from './ErrorPage';
-import './App.css';
+import TodoListComponent from '../component/TodoListComponent';
+import CommitListComponent from '../component/CommitListComponent';
+import ErrorPage from '../component/ErrorPage';
+import './App.css'
 import { BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid } from 'recharts';
 
 export default function App() {

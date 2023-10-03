@@ -2,14 +2,11 @@ import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { rest } from 'msw';
 import { setupServer } from 'msw/node';
-import App from './App';
+import App from './App/App';
 import '@testing-library/jest-dom';
 
-// テストが始まる前にmockTodosをセットアップ
-
-let mockTodos = [
-    { ID: 1, Title: 'Mock Todo 1', Completed: false },
-];
+// サーバーをセットアップして、エンドポイントをモックします。
+let mockTodos = []; // モックのTodosを保持する配列
 let mockCommits = [
   { ID: 1, Sha: "aaaaa", Message: "Message1", Date: "2023-10-01", Additions: 0, Deletions: 0, Total: 1 },
   { ID: 2, Sha: "bbbbb", Message: "Message2", Date: "2023-10-02", Additions: 1, Deletions: 1, Total: 2 },
@@ -42,53 +39,51 @@ let mockCommitData = [
   },
 ]
 
-// eslint-disable-next-line no-const-assign
+
 const server = setupServer(
   rest.get('http://127.0.0.1:8081/todos', (req, res, ctx) => {
-    console.log('GET /todos request received'); // ここでリクエストを受け取ったことを確認
+    console.log(mockTodos);
     return res(ctx.json(mockTodos)); // モックのTodosをレスポンスとして返す
   }),
   rest.get('http://127.0.0.1:8081/commits', (req, res, ctx) => {
-      console.log('GET /commits request received'); // ここでリクエストを受け取ったことを確認
-      return res(ctx.json(mockCommits)); // モックのTodosをレスポンスとして返す
-    }),
+    console.log('GET /commits request received'); // ここでリクエストを受け取ったことを確認
+    return res(ctx.json(mockCommits)); // モックのTodosをレスポンスとして返す
+  }),
   rest.get('http://127.0.0.1:8081/commitDataByDate', (req, res, ctx) => {
       console.log('GET /commitDataByDate request received'); // ここでリクエストを受け取ったことを確認
       return res(ctx.json(mockCommitData)); // モックのTodosをレスポンスとして返す
     }),
-  rest.put('http://127.0.0.1:8081/todos/update', (req, res, ctx) => {
-    const updateTodo = { Title: 'Update Todo', Completed: false };
-    mockTodos.Title = updateTodo.Title;
-    mockTodos.Completed = updateTodo.Completed;
-    return res(ctx.json(mockTodos));
+  // Todoの追加
+  rest.post('http://127.0.0.1:8081/addTodo', (req, res, ctx) => {
+    const newTodo = { ID: mockTodos.length + 1, Title: 'New Todo', Completed: false };
+    mockTodos.push(newTodo); // 新しいTodoをモックのTodosに追加
+    return res(ctx.json(newTodo));
   }),
 );
+
+// テストが終了したら、モックのTodosをリセット
+afterEach(() => {
+  mockTodos = [];
+});
 
 beforeAll(() => server.listen());
 afterEach(() => server.resetHandlers());
 afterAll(() => server.close());
 
-
-test('renders initial list of todos correctly', async () => {
-  render(<App />);
-  
-  const todoElement = await screen.findByText('Mock Todo 1', {}, { timeout: 5000 });//レンダリングが遅いのでこれが必須
-  expect(todoElement).toBeInTheDocument();
-});
-
-test('can delete an existing todo', async () => {
-  console.log(mockTodos);
+test('Add a new todo', async () => {
   render(<App />);
 
-  await screen.findByText('Mock Todo 1', {}, { timeout: 5000 }); //レンダリングが遅いのでこれが必須
-  expect(screen.getByTestId('edit-button-1')).toBeInTheDocument(); // この行で対象のボタンが存在するか確認します
-  fireEvent.click(screen.getByTestId('edit-button-1')); // IDに基づく編集ボタンをクリック
+  // 新しいToDoのタイトルを入力します。
+  fireEvent.change(screen.getByRole('textbox'), { target: { value: 'New Todo' } });
   
-  fireEvent.change(screen.getByTestId('update-textbox-1'), { target: { value: 'Update Todo' } });
-  fireEvent.change(screen.getByTestId('update-checkbox-1'), { target: { checked: !mockTodos.Completed } });
-  fireEvent.click(screen.getByTestId('update-button-1')); // IDに基づく更新ボタンをクリック
-
+  // 「Add」ボタンをクリックします。
+  //fireEvent.click(screen.getByTestId('add-button'));
+  fireEvent.submit(screen.getByTestId('add-form'));
+  
+  // 新しく追加された「Added Mocked Todo」が表示されるのを待ちます。
+  //const newTodoElement = await screen.findByText('New Todo');
+  //expect(newTodoElement).toBeInTheDocument();
   await waitFor(() => {
-    expect(screen.queryByText('Update Todo')).not.toBeInTheDocument();
+    expect(screen.getByText('New Todo')).toBeInTheDocument();
   });
 });

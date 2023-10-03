@@ -2,7 +2,7 @@ import React from 'react';
 import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import { rest } from 'msw';
 import { setupServer } from 'msw/node';
-import App from './App';
+import App from './App/App';
 import '@testing-library/jest-dom';
 
 // サーバーをセットアップして、エンドポイントをモックします。

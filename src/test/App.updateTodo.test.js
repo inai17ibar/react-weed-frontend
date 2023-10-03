@@ -2,7 +2,7 @@ import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { rest } from 'msw';
 import { setupServer } from 'msw/node';
-import App from './App';
+import App from '../app/App';
 import '@testing-library/jest-dom';
 
 // テストが始まる前にmockTodosをセットアップ
@@ -49,17 +49,18 @@ const server = setupServer(
     return res(ctx.json(mockTodos)); // モックのTodosをレスポンスとして返す
   }),
   rest.get('http://127.0.0.1:8081/commits', (req, res, ctx) => {
-    console.log('GET /commits request received'); // ここでリクエストを受け取ったことを確認
-    return res(ctx.json(mockCommits)); // モックのTodosをレスポンスとして返す
-  }),
+      console.log('GET /commits request received'); // ここでリクエストを受け取ったことを確認
+      return res(ctx.json(mockCommits)); // モックのTodosをレスポンスとして返す
+    }),
   rest.get('http://127.0.0.1:8081/commitDataByDate', (req, res, ctx) => {
       console.log('GET /commitDataByDate request received'); // ここでリクエストを受け取ったことを確認
       return res(ctx.json(mockCommitData)); // モックのTodosをレスポンスとして返す
     }),
-  // ToDoの削除
-  rest.delete('http://127.0.0.1:8081/todos/delete', (req, res, ctx) => {
-    mockTodos = mockTodos.filter(todo => todo.ID.toString() !== req.url.searchParams.get('ID'));
-    return res(ctx.json({}));
+  rest.put('http://127.0.0.1:8081/todos/update', (req, res, ctx) => {
+    const updateTodo = { Title: 'Update Todo', Completed: false };
+    mockTodos.Title = updateTodo.Title;
+    mockTodos.Completed = updateTodo.Completed;
+    return res(ctx.json(mockTodos));
   }),
 );
 
@@ -69,7 +70,6 @@ afterAll(() => server.close());
 
 
 test('renders initial list of todos correctly', async () => {
-  //console.log(mockTodos);  
   render(<App />);
   
   const todoElement = await screen.findByText('Mock Todo 1', {}, { timeout: 5000 });//レンダリングが遅いのでこれが必須
@@ -81,10 +81,14 @@ test('can delete an existing todo', async () => {
   render(<App />);
 
   await screen.findByText('Mock Todo 1', {}, { timeout: 5000 }); //レンダリングが遅いのでこれが必須
-  expect(screen.getByTestId('delete-button-1')).toBeInTheDocument(); // この行で対象のボタンが存在するか確認します
-  fireEvent.click(screen.getByTestId('delete-button-1')); // IDに基づく削除ボタンをクリック
+  expect(screen.getByTestId('edit-button-1')).toBeInTheDocument(); // この行で対象のボタンが存在するか確認します
+  fireEvent.click(screen.getByTestId('edit-button-1')); // IDに基づく編集ボタンをクリック
   
+  fireEvent.change(screen.getByTestId('update-textbox-1'), { target: { value: 'Update Todo' } });
+  fireEvent.change(screen.getByTestId('update-checkbox-1'), { target: { checked: !mockTodos.Completed } });
+  fireEvent.click(screen.getByTestId('update-button-1')); // IDに基づく更新ボタンをクリック
+
   await waitFor(() => {
-    expect(screen.queryByText('Mock Todo 1')).not.toBeInTheDocument();
+    expect(screen.queryByText('Update Todo')).not.toBeInTheDocument();
   });
 });

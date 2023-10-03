@@ -4,7 +4,7 @@
 FROM node:18
 
 # 作業ディレクトリを設定
-WORKDIR /src/App
+WORKDIR /src/app
 
 # 依存関係をコピー
 COPY package*.json ./

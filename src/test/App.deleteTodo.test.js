@@ -2,7 +2,7 @@ import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { rest } from 'msw';
 import { setupServer } from 'msw/node';
-import App from './App/App';
+import App from '../app/App';
 import '@testing-library/jest-dom';
 
 // テストが始まる前にmockTodosをセットアップ

@@ -11,7 +11,11 @@ function DateSelector({ selectedDate, onDateChange, onFetchTodos, todosByDate })
         onChange={onDateChange}
       />
       <button onClick={onFetchTodos}>Fetch Todos</button>
-      The Date Todo Count : {todosByDate === null ? 0 : todosByDate.length}
+      {selectedDate === "" || selectedDate == null ? (
+        <p>日付が未指定です</p>
+      ) : (
+        <p>今日のTODOの件数 : {todosByDate === null ? 0 : todosByDate.length}</p>
+      )}
     </div>
   );
 }

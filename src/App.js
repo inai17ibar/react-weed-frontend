@@ -189,8 +189,8 @@ export default function App() {
       {activeTab === 'todos' ? (<h1>ToDo List</h1>) : (<h1>Commits List</h1>)}
      <div>
       <div className="tab-container">
-        <button onClick={() => setActiveTab('todos')}>Todos</button>
-        <button onClick={() => setActiveTab('commits')}>Commits</button>
+        <button data-testid="todos-button" onClick={() => setActiveTab('todos')}>Todos</button>
+        <button data-testid="commits-button" onClick={() => setActiveTab('commits')}>Commits</button>
       </div>
       {activeTab === 'todos' ? (
         // TodoList の UI をここにレンダリング

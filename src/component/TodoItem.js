@@ -48,6 +48,7 @@ function TodoItem({ todo, onUpdate, onDelete }) {
         </>
       )}
       <button data-testid={`delete-button-${todo.ID}`} onClick={() => onDelete(todo.ID)}>Delete</button>
+      <span>Added on: {todo.Created_date}</span>
     </li>
   );
 }

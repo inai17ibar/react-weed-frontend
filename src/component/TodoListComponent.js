@@ -14,10 +14,8 @@ function TodoListComponent({
   handleSubmit,
   handleTodoChange,
   handleCompletedChange,
-  handleEdit,
   handleUpdate,
   handleDelete,
-  handleToggleComplete,
   selectedDate,
   handleDateChange,
   fetchTodosByDate,
@@ -38,10 +36,8 @@ function TodoListComponent({
               <TodoItem
                 key={todo.ID}
                 todo={todo}
-                onEdit={handleEdit}
                 onUpdate={handleUpdate}
                 onDelete={handleDelete}
-                onToggleComplete={handleToggleComplete}
               />
             ))
           ) : (

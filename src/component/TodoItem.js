@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-function TodoItem({ todo, onEdit, onUpdate, onDelete, onToggleComplete }) {
+function TodoItem({ todo, onUpdate, onDelete }) {
   const [isEditing, setIsEditing] = useState(false);
   const [editedTodo, setEditedTodo] = useState(null);
   //const [editedCompetedBefore, setEditedCompetedBefore] = useState(false);

@@ -13,7 +13,6 @@ export default function App() {
     Title: '',
     Completed: false,
   }); 
-  const [editingTodo, setEditingTodo] = useState(null);
   const [selectedDate, setSelectedDate] = useState('');
   const [todosByDate, setTodosByDate] = useState([]);
   const [isLoading, setIsLoading] = useState(true); // ローディング状態
@@ -118,8 +117,6 @@ export default function App() {
       await axios.put(`http://127.0.0.1:8081/todos/update?ID=${editedTodo.ID}`, editedTodo, {
         headers: { 'Content-type': "application/json" },
       });
-      
-      setEditingTodo(null);
       await fetchAndUpdateTodoList();
     } catch (error) {
       console.error('Axios encountered an error:', error); // エラーオブジェクト全体を出力
@@ -135,29 +132,6 @@ export default function App() {
           console.error('Error message:', error.message);
       }
   }
-  };
-
-  const handleEdit = (todoId, Title, Completed) => {
-    setEditingTodo({
-      ID: todoId,
-      Title: Title,
-      Completed: Completed,
-    });
-  };
-
-  const handleToggleComplete = (todoId) => {
-    // チェックボックスの状態をトグル（反転）させる
-    const updatedTodos = todos.map((todo) =>
-      todo.ID === todoId ? { ...todo, Completed: !todo.Completed } : todo
-    );
-  
-    // ToDoリストを更新
-    setTodos(updatedTodos);
-
-    // editTodo の Completed も変更 onChangeで2つ関数を設定できないのでこうする
-    if (editingTodo && editingTodo.ID === todoId) {
-      setEditingTodo({ ...editingTodo, Completed: !editingTodo.Completed });
-    }
   };
 
   function handleDelete(todoId) {
@@ -205,10 +179,8 @@ export default function App() {
           handleSubmit={handleSubmit}
           handleTodoChange={handleTodoChange}
           handleCompletedChange={handleCompletedChange}
-          handleEdit={handleEdit}
           handleUpdate={handleUpdate}
           handleDelete={handleDelete}
-          handleToggleComplete={handleToggleComplete}
           selectedDate={selectedDate}
           handleDateChange={handleDateChange}
           fetchTodosByDate={fetchTodosByDate}

@@ -22,8 +22,10 @@ export default function App() {
   const [commits, setCommits] = useState([]);
   const [commitData, setCommitData] = useState([]);
 
+  axios.defaults.baseURL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:8081';
+
   useEffect(() => {
-    axios.get('http://127.0.0.1:8081/todos')
+    axios.get('/todos')
     .then(response => {
       console.log(response.data); // ここで応答データをログに出力
       setTodos(response.data);
@@ -36,7 +38,7 @@ export default function App() {
       setIsLoading(false); // ロードが完了したら、ローディング状態をfalseに設定
     });
 
-    axios.get('http://127.0.0.1:8081/commits')
+    axios.get('/commits')
     .then(response => {
       console.log(response.data); // ここで応答データをログに出力
       setCommits(response.data);
@@ -46,7 +48,7 @@ export default function App() {
       setError(error); // エラーをセット
     })
 
-    axios.get('http://127.0.0.1:8081/commitDataByDate')
+    axios.get('/commitDataByDate')
     .then(response => {
       console.log(response.data); // ここで応答データをログに出力
       setCommitData(response.data);
@@ -59,7 +61,7 @@ export default function App() {
 
   // リクエスト送信とデータの取得を行う関数
   const fetchAndUpdateTodoList = async () => {
-    await axios.get('http://127.0.0.1:8081/todos') 
+    await axios.get('/todos') 
     .then(response => {
       setTodos(response.data);
     });
@@ -84,7 +86,7 @@ export default function App() {
   };
 
   const fetchTodosByDate = async () => {
-    await axios.get(`http://127.0.0.1:8081/todosByDate?Created_date=${selectedDate}`)
+    await axios.get(`/todosByDate?Created_date=${selectedDate}`)
       .then((response) => {
         setTodosByDate(response.data);
       })
@@ -94,7 +96,7 @@ export default function App() {
   };
 
   const handleSubmit = async () => {
-    await axios.post('http://127.0.0.1:8081/addTodo', 
+    await axios.post('/addTodo', 
     { Title: newTodo.Title, Completed: newTodo.Completed },
     { headers: { "Content-type": "text/plain" } })
     .then(response => {
@@ -113,10 +115,11 @@ export default function App() {
   const handleUpdate = async (editedTodo) => {
     try {
       //if(!editedTodo) return;
-      console.log(`Sending PUT request to: http://127.0.0.1:8081/todos/update?ID=${editedTodo.ID} with data:`, editedTodo);
-      await axios.put(`http://127.0.0.1:8081/todos/update?ID=${editedTodo.ID}`, editedTodo, {
+      console.log(`Sending PUT request to: /todos/update?ID=${editedTodo.ID} with data:`, editedTodo);
+      await axios.put(`/todos/update?ID=${editedTodo.ID}`, editedTodo, {
         headers: { 'Content-type': "application/json" },
       });
+
       await fetchAndUpdateTodoList();
     } catch (error) {
       console.error('Axios encountered an error:', error); // エラーオブジェクト全体を出力
@@ -135,7 +138,7 @@ export default function App() {
   };
 
   function handleDelete(todoId) {
-    axios.delete(`http://127.0.0.1:8081/todos/delete?ID=${todoId}`,
+    axios.delete(`/todos/delete?ID=${todoId}`,
     { headers: { "Content-type": "text/plain" } }) // delete/1とかもあるがどっちがいいか
     .then(async (response) => {
       // リクエストが成功した場合の処理をここに追加

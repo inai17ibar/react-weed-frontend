@@ -12,12 +12,12 @@ export default function CommitsGraph({ data, thresholds = [0, 0, 50, 100, 300] }
     }, []);
     
     const getColor = (value) => {
-        let color = "#EBEDF0"; // デフォルトの色
+        let color = "#E6F2DA"; // デフォルトの色
         if(value > thresholds[4]) color = "#196127";
         else if(value > thresholds[3]) color = "#239A3B";
         else if(value > thresholds[2]) color = "#7BC96F";
         else if(value > thresholds[1]) color = "#C6E48B";
-        else if(value === thresholds[0]) color = "#E6F2DA";
+        else if(value === thresholds[0]) color = "#EBEDF0";
         return color;
     };
 

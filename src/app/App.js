@@ -6,6 +6,7 @@ import ErrorPage from '../component/ErrorPage';
 import CommitsGraph from '../component/CommitsGraph';
 import './App.css'
 import { BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid } from 'recharts';
+import ContributionsGraph from '../component/ContributionsGraph';
 
 export default function App() {
   const [todos, setTodos] = useState([]);
@@ -21,6 +22,7 @@ export default function App() {
   const [activeTab, setActiveTab] = useState('todos');
   const [commits, setCommits] = useState([]);
   const [commitData, setCommitData] = useState([]);
+  const [contributionDays, setContributionDays] = useState([]);
 
   axios.defaults.baseURL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:8081';
 
@@ -52,6 +54,16 @@ export default function App() {
     .then(response => {
       console.log(response.data); // ここで応答データをログに出力
       setCommitData(response.data);
+    })
+    .catch(error => {
+      console.error('Error fetching data: ', error);
+      setError(error); // エラーをセット
+    })
+
+    axios.get('/contributionDays')
+    .then(response => {
+      console.log(response.data); // ここで応答データをログに出力
+      setContributionDays(response.data);
     })
     .catch(error => {
       console.error('Error fetching data: ', error);
@@ -202,7 +214,7 @@ export default function App() {
         </BarChart>
         <div className="weed-container">
           <h1>Contributions Graph</h1>
-          
+          <ContributionsGraph data={contributionDays} />
         </div>
         <div className="weed-container">
           <h1>Commits Graph</h1>

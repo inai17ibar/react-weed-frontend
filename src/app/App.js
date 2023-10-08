@@ -3,7 +3,7 @@ import axios from 'axios';
 import TodoListComponent from '../component/TodoListComponent';
 import CommitListComponent from '../component/CommitListComponent';
 import ErrorPage from '../component/ErrorPage';
-import ContributionGraph from '../component/ContributionGraph';
+import CommitsGraph from '../component/CommitsGraph';
 import './App.css'
 import { BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid } from 'recharts';
 
@@ -201,8 +201,12 @@ export default function App() {
           <Bar dataKey="Total" fill="#ff7300" />
         </BarChart>
         <div className="weed-container">
-          <h1>Contribution Graph</h1>
-          <ContributionGraph data={commitData} />
+          <h1>Contributions Graph</h1>
+          
+        </div>
+        <div className="weed-container">
+          <h1>Commits Graph</h1>
+          <CommitsGraph data={commitData} />
         </div>
         </div>
       )}

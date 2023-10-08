@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
-import './ContributionGraph.css';
+import './CommitsGraph.css';
 
-export default function ContributionGraph({ data, thresholds = [0, 0, 50, 100, 300] }) {
+export default function CommitsGraph({ data, thresholds = [0, 0, 50, 100, 300] }) {
     const containerRef = useRef(null);
 
     useEffect(() => {

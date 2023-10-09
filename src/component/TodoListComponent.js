@@ -8,6 +8,7 @@ function TodoListComponent({
   todos,
   isLoading,
   error,
+  errorMessage,
   showCompleted,
   setShowCompleted,
   newTodo,
@@ -53,7 +54,7 @@ function TodoListComponent({
         />
         Show Completed Todos
       </label>
-      <TodoForm newTodo={newTodo} onSubmit={handleSubmit} onTodoChange={handleTodoChange} onCompletedChange={handleCompletedChange} />
+      <TodoForm newTodo={newTodo} onSubmit={handleSubmit} onTodoChange={handleTodoChange} onCompletedChange={handleCompletedChange} errorMessage={errorMessage}/>
       <DateSelector selectedDate={selectedDate} onDateChange={handleDateChange} onFetchTodos={fetchTodosByDate} todosByDate={todosByDate} />
     </div>
   );

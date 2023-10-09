@@ -1,7 +1,7 @@
 // TodoForm.js
 import React from 'react';
 
-function TodoForm({ newTodo, onSubmit, onTodoChange, onCompletedChange }) {
+function TodoForm({ newTodo, onSubmit, onTodoChange, onCompletedChange, errorMessage}) {
   return (
     <form data-testid="add-form" onSubmit={onSubmit}>
       <input
@@ -15,6 +15,7 @@ function TodoForm({ newTodo, onSubmit, onTodoChange, onCompletedChange }) {
         onChange={onCompletedChange}
       />
       <button data-testid="add-button" type="submit">Add</button>
+      {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>} {/* エラーメッセージを表示 */}
     </form>
   );
 }

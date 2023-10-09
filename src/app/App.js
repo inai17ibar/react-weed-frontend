@@ -18,6 +18,8 @@ export default function App() {
   const [todosByDate, setTodosByDate] = useState([]);
   const [isLoading, setIsLoading] = useState(true); // ローディング状態
   const [error, setError] = useState(null); // エラーハンドリング
+  const [errorMessage, setErrorMessage] = useState(""); // エラーメッセージのステートを追加
+
   const [showCompleted, setShowCompleted] = useState(true);
   const [activeTab, setActiveTab] = useState('todos');
   const [commits, setCommits] = useState([]);
@@ -107,7 +109,18 @@ export default function App() {
       });
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (e) => {
+    e.preventDefault(); // フォームのデフォルトの動作を停止
+
+    // バリデーションチェック
+    if (!newTodo.Title.trim()) {
+      setErrorMessage("Text cannot be empty!");
+      return;
+    }
+
+    // エラーメッセージをクリア
+    setErrorMessage("");
+
     await axios.post('/addTodo', 
     { Title: newTodo.Title, Completed: newTodo.Completed },
     { headers: { "Content-type": "text/plain" } })
@@ -188,6 +201,7 @@ export default function App() {
           todos={todos}
           isLoading={isLoading}
           error={error}
+          errorMessage={errorMessage}
           showCompleted={showCompleted}
           setShowCompleted={setShowCompleted}
           newTodo={newTodo}

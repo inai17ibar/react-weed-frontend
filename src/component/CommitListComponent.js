@@ -1,4 +1,5 @@
 import React from "react";
+import { formatToJapaneseDate } from "../utils/timeUtils";
 
 function CommitListComponent( {commits}){
     return ( 
@@ -8,7 +9,7 @@ function CommitListComponent( {commits}){
         commits.map((commit) => (
           <li key={commit.Sha}>
             <p>{commit.Message}</p>
-            <p>{commit.Date}</p>
+            <p>{formatToJapaneseDate(commit.Date)}</p>
           </li>
         ))
       ) : (

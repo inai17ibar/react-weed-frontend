@@ -39,6 +39,17 @@ let mockCommitData = [
   },
 ]
 
+const mockContributionData = [
+  {
+      Date: '2023-10-05',
+      ContributionCount: 5
+  },
+  {
+      Date: '2023-10-06',
+      ContributionCount: 3
+  },
+]
+
 const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:8081';  // デフォルト値としてlocalhostのURLを指定
 
 const server = setupServer(
@@ -54,8 +65,12 @@ const server = setupServer(
       console.log('GET /commitDataByDate request received'); // ここでリクエストを受け取ったことを確認
       return res(ctx.json(mockCommitData)); // モックのTodosをレスポンスとして返す
     }),
+  rest.get(`${API_BASE_URL}/contibutionDays`, (req, res, ctx) => {
+      console.log('GET /contibutionDays request received'); // ここでリクエストを受け取ったことを確認
+      return res(ctx.json(mockContributionData)); // モックのTodosをレスポンスとして返す
+    }),
   // Todoの追加
-  rest.post(`${API_BASE_URL}/AddTodo`, (req, res, ctx) => {
+  rest.post(`${API_BASE_URL}/addTodo`, (req, res, ctx) => {
     const newTodo = { ID: mockTodos.length + 1, Title: 'New Todo', Completed: false };
     mockTodos.push(newTodo); // 新しいTodoをモックのTodosに追加
     return res(ctx.json(newTodo));

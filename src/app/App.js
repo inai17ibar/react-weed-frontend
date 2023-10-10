@@ -228,13 +228,13 @@ export default function App() {
         </BarChart>
         <div className="weed-contribution-container">
           <h1>Contributions Graph</h1>
-          {contributionDays.length > 0 ? (
+          {contributionDays && contributionDays.length > 0 ? (
           <ContributionsGraph data={contributionDays} />
           ): (<p>No contributions to display</p>)}
         </div>
         <div className="weed-commits-container">
           <h1>Commits Graph</h1>
-          {commitData.length > 0 ? (
+          {commitData && commitData.length > 0 ? (
           <CommitsGraph data={commitData} />
           ):( <p>No commits to display</p> )}
         </div>

@@ -27,7 +27,7 @@ export default function CommitsGraph({ data, thresholds = [0, 0, 50, 100, 300] }
     const endDate = new Date(sortedData[sortedData.length - 1].Date);
     const allDates = [];
 
-    for(let d = startDate; d <= endDate; d.setDate(d.getDate() + 1)) {
+    for(let d = new Date(startDate); d <= endDate; d.setDate(d.getDate() + 1)) {
         allDates.push(new Date(d));
     }
 
@@ -36,9 +36,26 @@ export default function CommitsGraph({ data, thresholds = [0, 0, 50, 100, 300] }
         return found || { Date: formatDate(date), Total: 0 };
     });
 
+    // 1. データの最初の日付が日曜日になるまで、weeksの最初の週に空のデータを追加
+    const firstDay = new Date(dataWithEmptyDates[0].Date).getDay(); // 0 = Sunday, 1 = Monday, ...
+    for (let i = 0; i < firstDay; i++) {
+        dataWithEmptyDates.unshift({
+            Date: "",
+            Total: 0,
+        });
+    }
+
+    // 2. 週ごとのデータを分割
     const weeks = [];
     for(let i = 0; i < dataWithEmptyDates.length; i += 7) {
-        weeks.push(dataWithEmptyDates.slice(i, i + 7));
+        const weekData = dataWithEmptyDates.slice(i, i + 7);
+        if (weekData.length < 7) {
+            const missingDays = 7 - weekData.length;
+            for (let j = 0; j < missingDays; j++) {
+                weekData.push({ Date: "", Total: 0 });
+            }
+        }
+        weeks.push(weekData);
     }
 
     return (

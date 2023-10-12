@@ -21,11 +21,30 @@ export default function ContributionsGraph({ data, thresholds = [0, 2, 4, 8, 12]
         return color;
     };
 
-    console.log(data)
+    // 1. データの最初の日付が日曜日になるまで、weeksの最初の週に空のデータを追加
+    const firstDay = new Date(data[0].Date).getDay(); // 0 = Sunday, 1 = Monday, ...
+    const emptyDays = firstDay === 0 ? 0 : 7 - firstDay;
+    for (let i = 0; i < emptyDays; i++) {
+        data.unshift({
+            Date: "",
+            ContributionCount: 0,
+        });
+    }
 
+    // 1-1. データの最後が7日分になるように空のデータを追加
+    const lastDay = new Date(data[data.length - 1].Date).getDay();
+    const emptyDaysAtEnd = (6 - lastDay) % 7; // 6 is Saturday
+    for (let i = 0; i < emptyDaysAtEnd; i++) {
+        data.push({
+            Date: "",
+            ContributionCount: 0,
+        });
+    }
+
+    // 2. 週ごとのデータを分割
     const weeks = [];
     for(let i = 0; i < data.length; i += 7) {
-        weeks.push(data.slice(i, i + 7));
+        weeks.push(data.slice(i, i + 7).reverse());
     }
 
     return (
@@ -35,11 +54,10 @@ export default function ContributionsGraph({ data, thresholds = [0, 2, 4, 8, 12]
                     {week.map(day => (
                         <div
                             key={day.Date}
-                            title={`Date: ${day.Date}\n ContributionCount: ${day.ContributionCount}`}
                             className="graph-cell"
                             style={{ backgroundColor: getColor(day.ContributionCount) }}
                         >
-                            <div className="tooltip">{`Date: ${day.Date}\n ContributionCount: ${day.ContributionsCount}`}</div>
+                            <div className="tooltip">{`Date: ${day.Date}\n ContributionCount: ${day.ContributionCount}`}</div>
                         </div>
                     ))}
                 </div>

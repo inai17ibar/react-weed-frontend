@@ -68,8 +68,8 @@ const server = setupServer(
       console.log('GET /commitDataByDate request received'); // ここでリクエストを受け取ったことを確認
       return res(ctx.json(mockCommitData)); // モックのTodosをレスポンスとして返す
     }),
-  rest.get(`${API_BASE_URL}/contibutionDays`, (req, res, ctx) => {
-      console.log('GET /contibutionDays request received'); // ここでリクエストを受け取ったことを確認
+  rest.get(`${API_BASE_URL}/contributionDays`, (req, res, ctx) => {
+      console.log('GET /contributionDays request received'); // ここでリクエストを受け取ったことを確認
       return res(ctx.json(mockContributionData)); // モックのTodosをレスポンスとして返す
     }),
 );

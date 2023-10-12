@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import axios from 'axios'; // axiosをインポート
+import { fetchTodos, fetchCommits, fetchCommitDataByDate, fetchContributions } from './api'; // api関数をインポート
 import TodoListComponent from '../component/TodoListComponent';
 import CommitListComponent from '../component/CommitListComponent';
 import ErrorPage from '../component/ErrorPage';
@@ -26,52 +27,28 @@ export default function App() {
   const [commitData, setCommitData] = useState([]);
   const [contributionDays, setContributionDays] = useState([]);
 
-  axios.defaults.baseURL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:8081';
-
   useEffect(() => {
-    axios.get('/todos')
-    .then(response => {
-      console.log(response.data); // ここで応答データをログに出力
-      setTodos(response.data);
-    })
-    .catch(error => {
-      console.error('Error fetching data: ', error);
-      setError(error); // エラーをセット
-    })
-    .finally(() => {
-      setIsLoading(false); // ロードが完了したら、ローディング状態をfalseに設定
-    });
+    const fetchData = async () => {
+        try {
+            const todosData = await fetchTodos();
+            setTodos(todosData.data);
+            const commitsData = await fetchCommits();
+            setCommits(commitsData.data);
+            const commitsDataByDate = await fetchCommitDataByDate();
+            setCommitData(commitsDataByDate.data);
+            const contributionsData = await fetchContributions();
+            setContributionDays(contributionsData.data);
+        } catch (error) {
+            console.error('Error fetching data:', error);
+            setError(error);
+            //課題1つのAPIが死ぬと全体がエラーになる
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
-    axios.get('/commits')
-    .then(response => {
-      console.log(response.data); // ここで応答データをログに出力
-      setCommits(response.data);
-    })
-    .catch(error => {
-      console.error('Error fetching data: ', error);
-      setError(error); // エラーをセット
-    })
-
-    axios.get('/commitDataByDate')
-    .then(response => {
-      console.log(response.data); // ここで応答データをログに出力
-      setCommitData(response.data);
-    })
-    .catch(error => {
-      console.error('Error fetching data: ', error);
-      setError(error); // エラーをセット
-    })
-
-    axios.get('/contributionDays')
-    .then(response => {
-      console.log(response.data); // ここで応答データをログに出力
-      setContributionDays(response.data);
-    })
-    .catch(error => {
-      console.error('Error fetching data: ', error);
-      setError(error); // エラーをセット
-    })
-  }, []);
+    fetchData();
+}, []);
 
   // リクエスト送信とデータの取得を行う関数
   const fetchAndUpdateTodoList = async () => {

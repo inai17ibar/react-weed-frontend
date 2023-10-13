@@ -6,7 +6,9 @@ import App from '../app/App';
 import '@testing-library/jest-dom';
 
 // サーバーをセットアップして、エンドポイントをモックします。
-let mockTodos = []; // モックのTodosを保持する配列
+let mockTodos = [
+  { ID: 1, Title: 'Mock', Completed: false }
+]; // モックのTodosを保持する配列
 let mockCommits = [
   { ID: 1, Sha: "aaaaa", Message: "Message1", Date: "2023-10-01", Additions: 0, Deletions: 0, Total: 1 },
   { ID: 2, Sha: "bbbbb", Message: "Message2", Date: "2023-10-02", Additions: 1, Deletions: 1, Total: 2 },
@@ -73,7 +75,10 @@ const server = setupServer(
   rest.post(`${API_BASE_URL}/addTodo`, (req, res, ctx) => {
     const newTodo = { ID: mockTodos.length + 1, Title: 'New Todo', Completed: false };
     mockTodos.push(newTodo); // 新しいTodoをモックのTodosに追加
+    
     console.log("Added Todo:", newTodo);  // このログを追加
+    console.log("Request body:", req.body); 
+    console.log("Response:", newTodo);
     return res(ctx.json(newTodo));
   }),
 );
@@ -91,15 +96,14 @@ test('Add a new todo', async () => {
   render(<App />);
 
   // 新しいToDoのタイトルを入力します。
-  fireEvent.change(screen.getByRole('textbox'), { target: { value: 'New Todo' } });
-  
-  // 「Add」ボタンをクリックします。
-  fireEvent.submit(screen.getByTestId('add-form'));
-  
-  // 新しく追加された「Added Mocked Todo」が表示されるのを待ちます。
+  const inputElement = screen.getByRole('textbox');
+  fireEvent.change(inputElement, { target: { value: 'New Todo' } });
+
+  // 「Add」ボタンをクリックします
+  fireEvent.click(screen.getByText('Add'));
   // const newTodoElement = await screen.findByText('New Todo');
   // expect(newTodoElement).toBeInTheDocument();
-   await waitFor(() => {
+  await waitFor(() => {
     expect(screen.getByText('New Todo')).toBeInTheDocument();
-  }, { timeout: 5000 });
+  }, { timeout: 2000 });
 });

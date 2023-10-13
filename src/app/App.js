@@ -105,30 +105,35 @@ export default function App() {
       return;
     }
     setErrorMessage("");
-    try {
-        const response = await axios.post('/addTodo', 
-            { Title: newTodo.Title, Completed: newTodo.Completed },
-            { headers: { "Content-type": "text/plain" } }
-        );
-        setTodos(prevTodos => [...prevTodos, response.data]);
-        setNewTodo({
-            Title: "",
-            Completed: false
-        });
-    } catch (error) {
-        console.error("Error adding todo:", error);
-        setErrorMessage("Failed to add todo.");
-    }
+    
+    await axios.post('/addTodo', 
+        { Title: newTodo.Title, Completed: newTodo.Completed },
+        { headers: { "Content-type": "text/plain" } }
+    )
+    .then(response => {
+      setTodos(prevTodos => {
+        const updatedTodos = [...prevTodos, response.data];
+        console.log("Updated todos:", updatedTodos);  // こちらでログ出力
+        return updatedTodos; //returnが必要
+      });
+      setNewTodo({
+        Title: "",
+        Completed: false
+      });
+    })
+    .catch(error => {
+      console.error("Error adding todo:", error);
+      setErrorMessage("Failed to add todo.");  
+    })
+    await fetchAndUpdateTodoList();//これがないとテストのときにレンダリングされない、GPTに聞いても謎
   };
 
   const handleUpdate = async (editedTodo) => {
     try {
-      //if(!editedTodo) return;
       console.log(`Sending PUT request to: /todos/update?ID=${editedTodo.ID} with data:`, editedTodo);
       await axios.put(`/todos/update?ID=${editedTodo.ID}`, editedTodo, {
         headers: { 'Content-type': "application/json" },
       });
-
       await fetchAndUpdateTodoList();
     } catch (error) {
       console.error('Axios encountered an error:', error); // エラーオブジェクト全体を出力
@@ -143,7 +148,7 @@ export default function App() {
           // リクエストの作成時に何かが問題になった場合
           console.error('Error message:', error.message);
       }
-  }
+    }
   };
 
   function handleDelete(todoId) {

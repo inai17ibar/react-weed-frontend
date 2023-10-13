@@ -6,6 +6,7 @@ function TodoForm({ newTodo, onSubmit, onTodoChange, onCompletedChange, errorMes
     <form data-testid="add-form" onSubmit={onSubmit}>
       <input
         type="text"
+        data-testid="todo-textbox"
         value={newTodo.Title}
         onChange={onTodoChange}
       />

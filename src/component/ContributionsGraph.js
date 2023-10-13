@@ -51,15 +51,18 @@ export default function ContributionsGraph({ data, thresholds = [0, 2, 4, 8, 12]
         <div className="graph-container" ref={containerRef}>
             {weeks.reverse().map((week, weekIndex) => (
                 <div key={weekIndex} className="graph-week">
-                    {week.map(day => (
-                        <div
-                            key={day.Date}
-                            className="graph-cell"
-                            style={{ backgroundColor: getColor(day.ContributionCount) }}
-                        >
-                            <div className="tooltip">{`Date: ${day.Date}\n ContributionCount: ${day.ContributionCount}`}</div>
-                        </div>
-                    ))}
+                    {week.map((day, dayIndex) => {
+                        const key = day.Date || `empty-${weekIndex}-${dayIndex}`;
+                        return (
+                            <div
+                                key={key}
+                                className="graph-cell"
+                                style={{ backgroundColor: getColor(day.ContributionCount) }}
+                            >
+                                <div className="tooltip">{`Date: ${day.Date}\n ContributionCount: ${day.ContributionCount}`}</div>
+                            </div>
+                        );
+                    })}
                 </div>
             ))}
         </div>

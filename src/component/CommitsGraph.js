@@ -62,10 +62,9 @@ export default function CommitsGraph({ data, thresholds = [0, 0, 50, 100, 300] }
         <div className="graph-container" ref={containerRef}>
             {weeks.map((week, weekIndex) => (
                 <div key={weekIndex} className="graph-week">
-                    {week.map(day => (
+                    {week.map((day, dayIndex) => (
                         <div
-                            key={day.Date}
-                            title={`Date: ${day.Date}\nTotal: ${day.Total}`}
+                            key={day.Date || `empty-${weekIndex}-${dayIndex}`}
                             className="graph-cell"
                             style={{ backgroundColor: getColor(day.Total) }}
                         >

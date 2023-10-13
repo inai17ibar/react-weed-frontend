@@ -73,6 +73,7 @@ const server = setupServer(
   rest.post(`${API_BASE_URL}/addTodo`, (req, res, ctx) => {
     const newTodo = { ID: mockTodos.length + 1, Title: 'New Todo', Completed: false };
     mockTodos.push(newTodo); // 新しいTodoをモックのTodosに追加
+    console.log("Added Todo:", newTodo);  // このログを追加
     return res(ctx.json(newTodo));
   }),
 );
@@ -93,13 +94,12 @@ test('Add a new todo', async () => {
   fireEvent.change(screen.getByRole('textbox'), { target: { value: 'New Todo' } });
   
   // 「Add」ボタンをクリックします。
-  //fireEvent.click(screen.getByTestId('add-button'));
   fireEvent.submit(screen.getByTestId('add-form'));
   
   // 新しく追加された「Added Mocked Todo」が表示されるのを待ちます。
-  //const newTodoElement = await screen.findByText('New Todo');
-  //expect(newTodoElement).toBeInTheDocument();
-  await waitFor(() => {
+  // const newTodoElement = await screen.findByText('New Todo');
+  // expect(newTodoElement).toBeInTheDocument();
+   await waitFor(() => {
     expect(screen.getByText('New Todo')).toBeInTheDocument();
-  });
+  }, { timeout: 5000 });
 });

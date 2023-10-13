@@ -28,26 +28,38 @@ export default function App() {
   const [contributionDays, setContributionDays] = useState([]);
 
   useEffect(() => {
-    const fetchData = async () => {
+    let isMounted = true;
+
+    const fetchAllData = async () => {
         try {
-            const todosData = await fetchTodos();
-            setTodos(todosData.data);
-            const commitsData = await fetchCommits();
-            setCommits(commitsData.data);
-            const commitsDataByDate = await fetchCommitDataByDate();
-            setCommitData(commitsDataByDate.data);
-            const contributionsData = await fetchContributions();
-            setContributionDays(contributionsData.data);
+            const [todosData, commitsData, commitsDataByDate, contributionsData] = await Promise.all([
+                fetchTodos(),
+                fetchCommits(),
+                fetchCommitDataByDate(),
+                fetchContributions()
+            ]);
+
+            if (isMounted) {
+                setTodos(todosData.data);
+                setCommits(commitsData.data);
+                setCommitData(commitsDataByDate.data);
+                setContributionDays(contributionsData.data);
+            }
         } catch (error) {
             console.error('Error fetching data:', error);
-            setError(error);
-            //課題1つのAPIが死ぬと全体がエラーになる
+            setErrorMessage("Failed to fetch data.");
         } finally {
-            setIsLoading(false);
+            if (isMounted) {
+                setIsLoading(false);
+            }
         }
     };
 
-    fetchData();
+    fetchAllData();
+
+    return () => {
+        isMounted = false; // cleanup function to handle unmounting
+    }
 }, []);
 
   // リクエスト送信とデータの取得を行う関数
@@ -87,31 +99,26 @@ export default function App() {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault(); // フォームのデフォルトの動作を停止
-
-    // バリデーションチェック
+    e.preventDefault();
     if (!newTodo.Title.trim()) {
       setErrorMessage("Text cannot be empty!");
       return;
     }
-
-    // エラーメッセージをクリア
     setErrorMessage("");
-
-    await axios.post('/addTodo', 
-    { Title: newTodo.Title, Completed: newTodo.Completed },
-    { headers: { "Content-type": "text/plain" } })
-    .then(response => {
-      setNewTodo({
-        Title: "",
-        Completed: false
-      });
-      console.log(response);
-    })
-    .catch(function (error) {
-      console.log(error);
-    });
-    await fetchAndUpdateTodoList(); //errorが出てもレンダリングが走る問題
+    try {
+        const response = await axios.post('/addTodo', 
+            { Title: newTodo.Title, Completed: newTodo.Completed },
+            { headers: { "Content-type": "text/plain" } }
+        );
+        setTodos(prevTodos => [...prevTodos, response.data]);
+        setNewTodo({
+            Title: "",
+            Completed: false
+        });
+    } catch (error) {
+        console.error("Error adding todo:", error);
+        setErrorMessage("Failed to add todo.");
+    }
   };
 
   const handleUpdate = async (editedTodo) => {

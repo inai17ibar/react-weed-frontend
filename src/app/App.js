@@ -2,12 +2,9 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios'; // axiosをインポート
 import { fetchTodos, fetchCommits, fetchCommitDataByDate, fetchContributions } from './api'; // api関数をインポート
 import TodoListComponent from '../component/TodoListComponent';
-import CommitListComponent from '../component/CommitListComponent';
 import ErrorPage from '../component/ErrorPage';
-import CommitsGraph from '../component/CommitsGraph';
 import './App.css'
-import { BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid } from 'recharts';
-import ContributionsGraph from '../component/ContributionsGraph';
+import CommitsView from '../component/CommitsView';
 
 function useTodos() {
   const [todos, setTodos] = useState([]);
@@ -95,7 +92,7 @@ export default function App() {
     return () => {
         isMounted = false; // cleanup function to handle unmounting
     }
-}, []);
+});
 
   // リクエスト送信とデータの取得を行う関数
   const fetchAndUpdateTodoList = async () => {
@@ -240,29 +237,10 @@ export default function App() {
           todosByDate={todosByDate}
         />
       ) : (
-        // MyCommit データのリストをここにレンダリング
-        <div>
-        <CommitListComponent commits={commits}/>
-        <BarChart width={500} height={200} data={commitData}>
-          <XAxis dataKey="Date" />
-          <YAxis domain={[0, 1000]}/>
-          <Tooltip />
-          <CartesianGrid stroke="#f5f5f5" />
-          <Bar dataKey="Total" fill="#ff7300" />
-        </BarChart>
-        <div className="weed-contribution-container">
-          <h1>Contributions Graph</h1>
-          {contributionDays && contributionDays.length > 0 ? (
-          <ContributionsGraph data={contributionDays} />
-          ): (<p>No contributions to display</p>)}
-        </div>
-        <div className="weed-commits-container">
-          <h1>Commits Graph</h1>
-          {commitData && commitData.length > 0 ? (
-          <CommitsGraph data={commitData} />
-          ):( <p>No commits to display</p> )}
-        </div>
-        </div>
+        <CommitsView
+          commits={commits}
+          commitData={commitData}
+          contributionDays={contributionDays}></CommitsView>
       )}
       </div>
       </div>);

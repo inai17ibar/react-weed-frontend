@@ -9,18 +9,53 @@ import './App.css'
 import { BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid } from 'recharts';
 import ContributionsGraph from '../component/ContributionsGraph';
 
-export default function App() {
+function useTodos() {
   const [todos, setTodos] = useState([]);
   const [newTodo, setNewTodo] = useState({
     Title: '',
     Completed: false,
-  }); 
-  const [selectedDate, setSelectedDate] = useState('');
-  const [todosByDate, setTodosByDate] = useState([]);
-  const [isLoading, setIsLoading] = useState(true); // ローディング状態
+  });
+  // ... その他のTodo関連の状態とロジック
+
+  return {
+    todos,
+    newTodo,
+    setTodos,
+    setNewTodo,
+  };
+}
+
+function useError() {
   const [error, setError] = useState(null); // エラーハンドリング
   const [errorMessage, setErrorMessage] = useState(""); // エラーメッセージのステートを追加
 
+  return {
+    error,
+    setError,
+    errorMessage,
+    setErrorMessage,
+  };
+}
+
+export default function App() {
+  const {
+    todos,
+    newTodo,
+    setTodos,
+    setNewTodo,
+  } = useTodos();
+
+  const {
+    error,
+    setError,
+    errorMessage,
+    setErrorMessage,
+  } = useError();
+
+  const [selectedDate, setSelectedDate] = useState('');
+  const [todosByDate, setTodosByDate] = useState([]);
+  const [isLoading, setIsLoading] = useState(true); // ローディング状態
+  
   const [showCompleted, setShowCompleted] = useState(true);
   const [activeTab, setActiveTab] = useState('todos');
   const [commits, setCommits] = useState([]);

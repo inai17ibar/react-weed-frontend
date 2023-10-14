@@ -92,7 +92,7 @@ export default function App() {
     return () => {
         isMounted = false; // cleanup function to handle unmounting
     }
-});
+}, [setErrorMessage, setTodos]);
 
   // リクエスト送信とデータの取得を行う関数
   const fetchAndUpdateTodoList = async () => {

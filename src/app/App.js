@@ -58,6 +58,7 @@ export default function App() {
   const [commits, setCommits] = useState([]);
   const [commitData, setCommitData] = useState([]);
   const [contributionDays, setContributionDays] = useState([]);
+  const [fetching, setFetching] = useState(false);
 
   useEffect(() => {
     let isMounted = true;
@@ -100,6 +101,42 @@ export default function App() {
     .then(response => {
       setTodos(response.data);
     });
+  };
+
+  const fetchAndCallApiCommitsContributions = async () => {
+    try {
+      setFetching(false);
+      // タスクを起動
+      const response = await axios.post('/fetchCommitContribution');
+      const taskID = response.data;
+  
+      let taskCompleted = false;
+      while (!taskCompleted) {
+        // 小さな待機時間を設けることで、連続してリクエストを行うのを防ぎます。
+        await new Promise(resolve => setTimeout(resolve, 2000));
+  
+        // タスクのステータスをチェック
+        const taskResponse = await axios.get(`/checkTaskResult?taskID=${taskID}`);
+        if (taskResponse.data && taskResponse.data.Status === "success") {
+          taskCompleted = true;
+        }
+      }
+  
+      // commitsの取得
+      const commitsResponse = await axios.get('/commits');
+      // commitDataの取得
+      const commitDataResponse = await axios.get('/commitDataByDate');
+      // contributionsの取得
+      const contributionsResponse = await axios.get('/contributionDays');
+      
+      setCommits(commitsResponse.data);
+      setCommitData(commitDataResponse.data);
+      setContributionDays(contributionsResponse.data);
+      setFetching(true);
+
+    } catch (error) {
+      console.error("An error occurred:", error);
+    }
   };
 
   const handleTodoChange = (e) => {
@@ -237,10 +274,14 @@ export default function App() {
           todosByDate={todosByDate}
         />
       ) : (
+        <div>
+        <button onClick={fetchAndCallApiCommitsContributions}>Fetch Commits and Contributions</button> 
+        {fetching ? (<p>Fetch Completed</p>):(<></>)}
         <CommitsView
           commits={commits}
           commitData={commitData}
           contributionDays={contributionDays}></CommitsView>
+        </div>
       )}
       </div>
       </div>);

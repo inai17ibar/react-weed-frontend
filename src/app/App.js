@@ -58,7 +58,8 @@ export default function App() {
   const [commits, setCommits] = useState([]);
   const [commitData, setCommitData] = useState([]);
   const [contributionDays, setContributionDays] = useState([]);
-  const [fetching, setFetching] = useState(false);
+  const [completeFetching, setCompleteFetching] = useState(false);
+  const [fetching, setFetching] = useState(false); // ローディング状態
 
   useEffect(() => {
     let isMounted = true;
@@ -105,7 +106,8 @@ export default function App() {
 
   const fetchAndCallApiCommitsContributions = async () => {
     try {
-      setFetching(false);
+      setCompleteFetching(false);
+      setFetching(true);
       // タスクを起動
       const response = await axios.post('/fetchCommitContribution');
       const taskID = response.data;
@@ -132,7 +134,9 @@ export default function App() {
       setCommits(commitsResponse.data);
       setCommitData(commitDataResponse.data);
       setContributionDays(contributionsResponse.data);
-      setFetching(true);
+      
+      setCompleteFetching(true);
+      setFetching(false);
 
     } catch (error) {
       console.error("An error occurred:", error);
@@ -276,7 +280,8 @@ export default function App() {
       ) : (
         <div>
         <button onClick={fetchAndCallApiCommitsContributions}>Fetch Commits and Contributions</button> 
-        {fetching ? (<p>Fetch Completed</p>):(<></>)}
+        {completeFetching ? (<p>Fetch Completed</p>):(<></>)}
+        {fetching ? (<div className="loading-spinner"></div>):(<></>)}
         <CommitsView
           commits={commits}
           commitData={commitData}

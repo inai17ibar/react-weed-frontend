@@ -11,6 +11,7 @@ function useTodos() {
   const [newTodo, setNewTodo] = useState({
     Title: '',
     Completed: false,
+    Favorite: false,
   });
   // ... その他のTodo関連の状態とロジック
 

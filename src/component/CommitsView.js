@@ -2,20 +2,15 @@ import React from 'react';
 import CommitListComponent from './CommitListComponent';
 import ContributionsGraph from './ContributionsGraph';
 import CommitsGraph from './CommitsGraph';
-import { BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid } from 'recharts';
+//import  './CommitsView.css';
+import CommitChart from './CommitChart';
 
 function CommitsView({ commits, commitData, contributionDays }) {
   return (
     // MyCommit データのリストをここにレンダリング
     <div>
     <CommitListComponent commits={commits}/>
-    <BarChart width={500} height={200} data={commitData}>
-      <XAxis dataKey="Date" />
-      <YAxis domain={[0, 1000]}/>
-      <Tooltip />
-      <CartesianGrid stroke="#f5f5f5" />
-      <Bar dataKey="Total" fill="#ff7300" />
-    </BarChart>
+    <CommitChart commitData={commitData}/>
     <div className="weed-contribution-container">
       <h1>Contributions Graph</h1>
       {contributionDays && contributionDays.length > 0 ? (

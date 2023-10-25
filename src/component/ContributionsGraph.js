@@ -10,7 +10,11 @@ export default function ContributionsGraph({ data, thresholds = [0, 2, 4, 8, 12]
         containerElement.scrollLeft = containerElement.scrollWidth;
         }
     }, []);
-    
+
+    if (!data) {
+        return <div>No data available</div>
+    }
+
     const getColor = (value) => {
         let color = "#E6F2DA"; // デフォルトの色
         if(value > thresholds[4]) color = "#196127";

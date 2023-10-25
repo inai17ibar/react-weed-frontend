@@ -2,6 +2,9 @@ import React from "react";
 import { formatToJapaneseDate } from "../utils/timeUtils";
 
 function CommitListComponent( {commits}){
+    if (!commits) {
+        return <div>No data available</div>
+      }
     return ( 
     <div className="commit-list-container">
     <ul>

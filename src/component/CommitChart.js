@@ -2,6 +2,9 @@ import React from "react";
 import { BarChart, XAxis, YAxis, Tooltip, CartesianGrid, Bar } from "recharts";
 
 const CommitChart = ({ commitData }) => {
+  if (!commitData) {
+    return <div>No data available</div>
+  }
   // 現在の日付を取得
   const currentDate = new Date();
 
@@ -15,8 +18,8 @@ const CommitChart = ({ commitData }) => {
   );
 
   const clippedData = filteredData.map(item => {
-    if (item.Total > 3000) {
-      return { ...item, Total: 3000 };
+    if (item.Total > 1000) {
+      return { ...item, Total: 1000 };
     }
     return item;
   });
@@ -25,12 +28,12 @@ const CommitChart = ({ commitData }) => {
     <div>
     <BarChart width={500} height={200} data={clippedData}>
     <XAxis dataKey="Date" />
-    <YAxis domain={[0, 3000]} />
+    <YAxis domain={[0, 1000]} />
     <Tooltip />
     <CartesianGrid stroke="#f5f5f5" />
     <Bar dataKey="Total" fill="#ff7300" />
     </BarChart>
-    <p>※3000行以上のコード変更は3000と表す</p>
+    <p>※1000行以上のコード変更は1000と表す</p>
     </div>
   );
 };
